@@ -666,8 +666,11 @@ html.lang-en .hero-title {
   padding: 20px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  /* ★ 平時唔接收指針事件，點擊直接穿透到 img / .gallery-item，
+       唔會再擋住「點擊放大」；hover 顯示時先接收 */
+  pointer-events: none;
 }
-.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-item:hover .gallery-overlay { opacity: 1; pointer-events: auto; }
 .gallery-overlay span {
   color: var(--paper);
   font-size: 14px;
@@ -934,14 +937,18 @@ html.lang-en .hero-title {
 }
 .lightbox.open { opacity: 1; visibility: visible; }
 .lightbox-img {
-  max-width: 92vw; max-height: 82vh;
+  max-width: 96vw; max-height: 90vh;
+  width: auto; height: auto;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  transform: scale(0.94);
+  transform: scale(0.96);
   transition: transform 0.3s cubic-bezier(.2,.8,.3,1.2);
+  cursor: zoom-in;
 }
 .lightbox.open .lightbox-img { transform: scale(1); }
+/* 點擊大圖本身 = 下一張（再大都可以再切換）；覆蓋層唔阻擋 */
+.lightbox-img { pointer-events: auto; }
 .lightbox-close {
   position: absolute; top: 22px; right: 26px;
   width: 44px; height: 44px; border: none; cursor: pointer;
@@ -1702,15 +1709,23 @@ var lbIndex = 0;
 var lbList = [];
 
 function bindGalleryClick(root) {
-  // 收集呢個相簿區塊入面所有圖，建立可切換清單
-  var items = root.querySelectorAll('.gallery-item img');
-  items.forEach(function(img) {
-    img.addEventListener('click', function() {
-      // 每次點擊重新收集當前可見嘅所有圖（含同一相簿）
-      lbList = Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el) { return el; });
-      lbIndex = lbList.indexOf(img);
-      openLightbox(img.src, img.alt);
-    });
+  // ★ 用事件委派，綁去 .gallery-item（而唔係 img 本身）。
+  //   原因：.gallery-overlay 用 position:absolute; inset:0 覆蓋住成塊，
+  //   如果直接監聽 img，click 會俾 overlay 食咗，永遠觸發唔到 → 點擊放唔大。
+  //   委派到 item 後，無論點擊圖、overlay、定係將來加嘅元素，都一定行到。
+  if (!root || root.__galleryBound) return;
+  root.__galleryBound = true;
+  root.addEventListener('click', function(e) {
+    var item = e.target.closest && e.target.closest('.gallery-item');
+    if (!item) return;
+    // 如果點擊嘅係 lightbox 內部（理論上唔會喺 albumsRoot 入面），忽略
+    var img = item.querySelector('img');
+    if (!img) return;
+    // 每次重新收集晒所有可見圖，確保切語言後清單最新
+    lbList = Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el) { return el; });
+    lbIndex = lbList.indexOf(img);
+    if (lbIndex < 0) lbIndex = 0;
+    openLightbox(img.src, img.alt);
   });
 }
 
@@ -1767,9 +1782,13 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('lbClose').addEventListener('click', closeLightbox);
   document.getElementById('lbPrev').addEventListener('click', function() { showLightboxOffset(-1); });
   document.getElementById('lbNext').addEventListener('click', function() { showLightboxOffset(1); });
-  // 點背景（唔係按鈕、唔係圖）就關閉
+  // 點背景 / 點大圖（唔係按鈕）嘅行為：
+  //   - 點大圖本體 → 下一張（想再放大／切換都好用）
+  //   - 點背景空白位 → 關閉
   box.addEventListener('click', function(e) {
-    if (e.target === box) closeLightbox();
+    var t = e.target;
+    if (t === box) { closeLightbox(); return; }
+    if (t && t.id === 'lbImg') { showLightboxOffset(1); return; }
   });
   // 鍵盤：Esc 關閉、← → 切換
   document.addEventListener('keydown', function(e) {
