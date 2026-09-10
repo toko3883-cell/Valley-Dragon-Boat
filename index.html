@@ -1712,21 +1712,17 @@ function loadAlbums(callback) {
 
 /* ============================================================
    Lightbox：點擊圖展圖片 → 全屏放大，可上下張切換、滑動（手機）
+   ※ 改用「事件委派」：監聽擺喺 #galleryGrid 容器，
+     無論 renderAlbums() 幾時重畫，點擊一定行到（根治放唔大）
    ============================================================ */
 var lbIndex = 0;
 var lbList = [];
 
-function bindGalleryClick(root) {
-  // 收集呢個相簿區塊入面所有圖，建立可切換清單
-  var items = root.querySelectorAll('.gallery-item img');
-  items.forEach(function(img) {
-    img.addEventListener('click', function() {
-      // 每次點擊重新收集當前可見嘅所有圖（含同一相簿）
-      lbList = Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el) { return el; });
-      lbIndex = lbList.indexOf(img);
-      openLightbox(img.src, img.alt);
-    });
-  });
+// 每次要開之前，先重新收集當前所有圖（就算重畫過都最新）
+function collectLightboxList() {
+  var grid = document.getElementById('galleryGrid');
+  if (!grid) return [];
+  return Array.prototype.map.call(grid.querySelectorAll('.gallery-item img'), function(el) { return el; });
 }
 
 function openLightbox(src, alt) {
@@ -1735,6 +1731,7 @@ function openLightbox(src, alt) {
   var lbCap = document.getElementById('lbCaption');
   if (!box) return;
   lbImg.src = src;
+  lbImg.style.opacity = '1';
   lbCap.textContent = alt || '';
   box.classList.add('open');
   box.setAttribute('aria-hidden', 'false');
@@ -1742,20 +1739,20 @@ function openLightbox(src, alt) {
 
 function closeLightbox() {
   var box = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lbImg');
   if (!box) return;
   box.classList.remove('open');
   box.setAttribute('aria-hidden', 'true');
-  // 清 src，避免下次打開閃舊圖
-  setTimeout(function() { document.getElementById('lbImg').src = ''; }, 300);
+  setTimeout(function() { if (lbImg) lbImg.src = ''; }, 300);
 }
 
 function showLightboxOffset(offset) {
+  if (lbList.length === 0) lbList = collectLightboxList();
   if (lbList.length === 0) return;
   lbIndex = (lbIndex + offset + lbList.length) % lbList.length;
   var img = lbList[lbIndex];
   var lbImg = document.getElementById('lbImg');
   var lbCap = document.getElementById('lbCaption');
-  // 淡入切換效果
   lbImg.style.opacity = '0.4';
   setTimeout(function() {
     lbImg.src = img.src;
@@ -1764,17 +1761,37 @@ function showLightboxOffset(offset) {
   }, 120);
 }
 
-// 事件委派：關閉、上下張、鍵盤、滑動
+// 事件委派：將 click 統一擺喺 #galleryGrid，唔使逐張 bind
 document.addEventListener('DOMContentLoaded', function() {
   var box = document.getElementById('lightbox');
   if (!box) return;
-  document.getElementById('lbClose').addEventListener('click', closeLightbox);
-  document.getElementById('lbPrev').addEventListener('click', function() { showLightboxOffset(-1); });
-  document.getElementById('lbNext').addEventListener('click', function() { showLightboxOffset(1); });
+
+  // ★ 點擊圖展圖片 → 放大（事件委派，重畫都有效）
+  var grid = document.getElementById('galleryGrid');
+  if (grid) {
+    grid.addEventListener('click', function(e) {
+      var img = e.target.closest('.gallery-item img');
+      if (!img) return;
+      lbList = collectLightboxList();
+      lbIndex = lbList.indexOf(img);
+      if (lbIndex < 0) lbIndex = 0;
+      openLightbox(img.src, img.alt);
+    });
+  }
+
+  // 關閉、上下張按鈕
+  var lbClose = document.getElementById('lbClose');
+  var lbPrev = document.getElementById('lbPrev');
+  var lbNext = document.getElementById('lbNext');
+  if (lbClose) lbClose.addEventListener('click', closeLightbox);
+  if (lbPrev) lbPrev.addEventListener('click', function() { showLightboxOffset(-1); });
+  if (lbNext) lbNext.addEventListener('click', function() { showLightboxOffset(1); });
+
   // 點背景（唔係按鈕、唔係圖）就關閉
   box.addEventListener('click', function(e) {
     if (e.target === box) closeLightbox();
   });
+
   // 鍵盤：Esc 關閉、← → 切換
   document.addEventListener('keydown', function(e) {
     if (!box.classList.contains('open')) return;
@@ -1782,6 +1799,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.key === 'ArrowLeft') showLightboxOffset(-1);
     if (e.key === 'ArrowRight') showLightboxOffset(1);
   });
+
   // 手機滑動手勢
   var startX = 0, startY = 0, distX = 0;
   box.addEventListener('touchstart', function(e) {
@@ -1792,7 +1810,7 @@ document.addEventListener('DOMContentLoaded', function() {
     distX = t.pageX - startX;
     var distY = t.pageY - startY;
     if (Math.abs(distX) > 40 && Math.abs(distX) > Math.abs(distY)) {
-      showLightboxOffset(distX < 0 ? 1 : -1);  // 向左滑 = 下一張
+      showLightboxOffset(distX < 0 ? 1 : -1);
     }
   }, { passive: true });
 });
@@ -1821,8 +1839,8 @@ function renderAlbums() {
     html += '</div>';
   });
   root.innerHTML = html;
-  // 綁定 Lightbox（點擊放大）—— 重用原有 bindGalleryClick
-  bindGalleryClick(document);
+  // ★ Lightbox 已改為「事件委派」（監聽擺喺 #galleryGrid），
+  //   唔使再逐張 bind，呢度無需做任何綁定，點擊一定有效。
 }
 
 // 畀語言切換呼叫
