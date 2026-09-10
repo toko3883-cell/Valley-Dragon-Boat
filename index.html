@@ -515,33 +515,94 @@ html.lang-en .hero-title {
 /* ===== 活動推廣 ===== */
 .events-section { padding: 100px 48px; }
 .events-inner { max-width: 1200px; margin: 0 auto; }
-.events-iframe-wrap {
+
+/* 活動表格（響應式：桌面=表格、手機=卡片） */
+.events-table {
   margin-top: 48px;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(30,42,56,0.12);
+  box-shadow: 0 12px 40px rgba(30,42,56,0.10);
   border: 1px solid rgba(30,42,56,0.08);
+  background: #fff;
 }
-.events-iframe-wrap iframe {
-  width: 100%;
-  height: 520px;
-  border: none;
-  display: block;
+.events-table .et-head,
+.events-table .et-row {
+  display: grid;
+  grid-template-columns: 2.4fr 1.2fr 1fr 2.6fr 1fr;
+  align-items: center;
 }
-/* iframe 載入失敗時嘅 fallback（飛書表格跨域常被擋） */
-.events-fallback {
-  display: none;
-  margin-top: 48px;
-  padding: 60px 24px;
+.events-table .et-head {
+  background: var(--ink);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.events-table .et-head > div { padding: 16px 18px; text-align: left; }
+.events-table .et-row {
+  border-top: 1px solid rgba(30,42,56,0.06);
+  transition: background 0.2s;
+}
+.events-table .et-row:hover { background: var(--paper); }
+.events-table .et-row > div { padding: 18px; font-size: 14px; color: var(--ink); }
+.events-table .et-title { font-weight: 700; font-size: 15px; line-height: 1.4; }
+.events-table .et-date { color: var(--red); font-weight: 600; }
+.events-table .et-time { color: var(--ink-light); }
+.events-table .et-desc { color: var(--ink-light); line-height: 1.55; }
+
+/* 狀態標籤 */
+.et-status {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
   text-align: center;
-  background: var(--paper-dark);
-  border: 2px dashed rgba(46,107,138,0.3);
-  border-radius: 8px;
-  color: var(--ink-light);
+  white-space: nowrap;
 }
-.events-fallback.show { display: block; }
+.et-status.s-即將舉行 { background: rgba(46,107,138,0.12); color: var(--water-deep); }
+.et-status.s-開放報名 { background: rgba(184,35,47,0.12); color: var(--red); }
+.et-status.s-報名截止 { background: rgba(201,162,75,0.16); color: #9A7420; }
+.et-status.s-已結束   { background: rgba(30,42,56,0.08); color: var(--ink-light); }
+
+/* 報名按鈕（在手機卡片模式顯示） */
+.et-register {
+  display: none;
+  margin-top: 14px;
+  padding: 10px 18px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+.et-register:active { background: var(--red-deep); }
+
+/* 手機/平板：表格變卡片 */
+@media (max-width: 900px) {
+  .events-table .et-head { display: none; }
+  .events-table .et-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 18px;
+    gap: 8px;
+  }
+  .events-table .et-row > div { padding: 2px 0; font-size: 14px; }
+  .events-table .et-title { font-size: 17px; margin-bottom: 4px; }
+  .events-table .et-desc { order: 5; margin-top: 6px; }
+  .events-table .et-status { order: 4; align-self: flex-start; }
+  .events-table .et-row .et-register { display: block; order: 6; width: 100%; }
+}
+@media (max-width: 480px) {
+  .events-table .et-row { padding: 16px; }
+  .events-table .et-title { font-size: 16px; }
+}
+
+/* 管理連結（飛書，只俾管理員用） */
 .events-manage-link {
-  margin-top: 20px;
+  margin-top: 24px;
   text-align: center;
 }
 .events-manage-link a {
@@ -556,10 +617,7 @@ html.lang-en .hero-title {
   border-radius: 24px;
   transition: all 0.25s ease;
 }
-.events-manage-link a:hover {
-  background: var(--water);
-  color: #fff;
-}
+.events-manage-link a:hover { background: var(--water); color: #fff; }
 .events-manage-link svg { width: 16px; height: 16px; }
 
 /* ===== 圖片展覽 ===== */
@@ -1072,17 +1130,8 @@ html.lang-en .hero-title {
     <h2 class="section-title" data-i18n="event_title">齊齊參與，感受龍舟魅力</h2>
     <p class="section-intro" data-i18n="event_lead">山谷聯龍舟隊定期舉辦各類活動，無論你係新手定係老手，都可以搵到適合自己嘅參與方式。一齊落水，感受槳影破浪嘅快感！</p>
 
-    <div class="events-iframe-wrap">
-      <iframe id="eventsIframe" src="https://my.feishu.cn/base/KtLFbkzaia7ifGsQERjc9j8Dnpd?table=tblqheNNvxEgk52Z&view=vew4DO6qa5" title="山谷聯龍舟活動表" loading="lazy"></iframe>
-    </div>
-    <!-- iframe 被跨域擋住時顯示嘅替代內容 -->
-    <div class="events-fallback" id="eventsFallback">
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--water)" stroke-width="1.5" style="margin:0 auto 16px;">
-        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-      </svg>
-      <p style="font-size:16px; color:var(--ink); margin-bottom:8px;">活動表格無法在頁內預覽</p>
-      <p style="font-size:14px;">飛書表格受跨域限制，請點擊下方按鈕前往飛書查看最新活動安排。</p>
+    <div class="events-table" id="eventsTable" role="table" aria-label="活動列表">
+      <!-- 由 events.json 動態渲染，唔使改 index.html -->
     </div>
     <div class="events-manage-link">
       <a href="https://my.feishu.cn/base/KtLFbkzaia7ifGsQERjc9j8Dnpd" target="_blank" rel="noopener">
@@ -1320,6 +1369,12 @@ var I18N = {
   event_title: { zh: "齊齊參與，感受龍舟魅力", en: "Join In, Feel the Dragon Boat Spirit" },
   event_lead: { zh: "山谷聯龍舟隊定期舉辦各類活動，無論你係新手定係老手，都可以搵到適合自己嘅參與方式。一齊落水，感受槳影破浪嘅快感！", en: "The Shan Guk Luen Dragon Boat Team organises events regularly. Whether you're a beginner or a veteran, there's a way to join. Come on board and feel the thrill of paddles cutting the waves!" },
   event_manage: { zh: "喺飛書表格度管理活動", en: "Manage events in Feishu" },
+  ev_col_title: { zh: "活動", en: "Event" },
+  ev_col_date: { zh: "日期", en: "Date" },
+  ev_col_time: { zh: "時間", en: "Time" },
+  ev_col_desc: { zh: "詳情", en: "Details" },
+  ev_col_status: { zh: "狀態", en: "Status" },
+  ev_register: { zh: "立即報名 →", en: "Register Now →" },
 
   gallery_label: { zh: "圖 片 展 覽", en: "PHOTO  GALLERY" },
   gallery_title: { zh: "鏡頭下的龍舟瞬間", en: "Dragon Boat Moments, Through the Lens" },
@@ -1369,6 +1424,7 @@ function switchLang(lang) {
   document.documentElement.classList.toggle('lang-en', lang === 'en');
   try { localStorage.setItem('lang', lang); } catch(e) {}
   if (typeof renderAlbums === 'function') renderAlbums();
+  if (typeof renderEvents === 'function') renderEvents();
 }
 
 /* ============================================================
@@ -1475,20 +1531,64 @@ function renderAlbums() {
 }
 
 /* ============================================================
-   飛書 iframe 跨域 fallback 偵測
-   （iframe 被 X-Frame-Options 擋住時顯示替代內容）
+   活動列表 — 由 events.json 動態渲染（響應式：桌面=表格、手機=卡片）
+   ※ 想更新活動，改 events.json 就得，唔使改 index.html
    ============================================================ */
-function checkIframe() {
-  var iframe = document.getElementById('eventsIframe');
-  var fallback = document.getElementById('eventsFallback');
-  if (!iframe || !fallback) return;
-  try {
-    // 同域可存取 contentWindow，飛書跨域會拋錯 → 判定為被擋
-    var doc = iframe.contentWindow.document;
-    if (!doc || doc.body == null) throw new Error('empty');
-  } catch(e) {
-    fallback.classList.add('show');
-  }
+var EVENTS_CACHE = [];
+
+function statusClass(s) {
+  return 's-' + (s || '').replace(/[^一-龥a-zA-Z0-9]/g, '');
+}
+
+function renderEvents() {
+  var root = document.getElementById('eventsTable');
+  if (!root) return;
+  var lang = document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
+  var events = EVENTS_CACHE.length ? EVENTS_CACHE : (window.__EVENTS__ || []);
+
+  var head = '<div class="et-head" role="row">' +
+               '<div role="columnheader" data-i18n="ev_col_title">活動</div>' +
+               '<div role="columnheader" data-i18n="ev_col_date">日期</div>' +
+               '<div role="columnheader" data-i18n="ev_col_time">時間</div>' +
+               '<div role="columnheader" data-i18n="ev_col_desc">詳情</div>' +
+               '<div role="columnheader" data-i18n="ev_col_status">狀態</div>' +
+             '</div>';
+
+  var rows = events.map(function(ev) {
+    var title = (ev.title && ev.title[lang]) || ev.title;
+    var desc  = (ev.desc && ev.desc[lang]) || ev.desc;
+    var loc   = (ev.location && ev.location[lang]) || ev.location || '';
+    var detail = loc ? desc + '<br><small style="color:var(--water)">📍 ' + loc + '</small>' : desc;
+    var regBtn = (ev.register && ev.register !== '') ?
+      '<a class="et-register" href="' + ev.register + '" target="_blank" rel="noopener" data-i18n="ev_register">立即報名 →</a>' : '';
+    var statusText = (ev.status && ev.status[lang]) || ev.status || '';
+    return '<div class="et-row" role="row">' +
+             '<div class="et-title" role="cell">' + title + regBtn + '</div>' +
+             '<div class="et-date" role="cell">' + (ev.date || '') + '</div>' +
+             '<div class="et-time" role="cell">' + (ev.time || '') + '</div>' +
+             '<div class="et-desc" role="cell">' + detail + '</div>' +
+             '<div class="et-status ' + statusClass(statusText) + '" role="cell">' + statusText + '</div>' +
+           '</div>';
+  }).join('');
+
+  root.innerHTML = head + rows;
+}
+
+function loadEvents() {
+  var root = document.getElementById('eventsTable');
+  if (!root) return;
+  root.innerHTML = '<div style="padding:40px;text-align:center;color:var(--ink-light)">載入緊活動資料…</div>';
+  fetch('events.json', { cache: 'no-cache' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      EVENTS_CACHE = (data && data.events) ? data.events : (Array.isArray(data) ? data : []);
+      window.__EVENTS__ = EVENTS_CACHE;
+      renderEvents();
+    })
+    .catch(function() {
+      // 萬一 events.json 攞唔到，保持現有靜態內容（唔顯示錯誤）
+      root.innerHTML = '';
+    });
 }
 
 /* ============================================================
@@ -1503,7 +1603,7 @@ document.addEventListener('DOMContentLoaded', function() {
   loadAlbums(function() {
     renderAlbums();
   });
-  checkIframe();
+  loadEvents();
 });
 </script>
 </body>
