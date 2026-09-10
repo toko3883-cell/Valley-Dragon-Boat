@@ -1323,9 +1323,10 @@ html.lang-en .hero-title {
     <h2 class="section-title" data-i18n="gallery_title">鏡頭下的龍舟瞬間</h2>
     <p class="section-intro" data-i18n="gallery_lead">透過鏡頭，記錄龍舟人每一個奮勇爭先嘅畫面。由比賽現場到日常訓練，由清晨到黃昏，每一格都係汗水與熱誠。</p>
 
-    <!-- 修正：整個 grid 結構完整，三張相都在 container 內 -->
-        <!-- 相簿內容由 JS 根據 ALBUMS 資料動態生成（含版面相 LSGL） -->
-    <div id="albumsRoot"></div>
+    <!-- 圖展：單一相簿，直接渲染 images/gallery/photo1~N（版面相/練習花絮/山谷聯/端午節/比賽日 分類已全部移除） -->
+    <div class="album">
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </div>
 
   </div>
 </section>
@@ -1613,7 +1614,7 @@ function switchLang(lang) {
   });
   document.documentElement.classList.toggle('lang-en', lang === 'en');
   try { localStorage.setItem('lang', lang); } catch(e) {}
-  if (typeof renderAlbums === 'function') renderAlbums();
+  if (typeof renderGallery === 'function') renderGallery();
   if (typeof renderEvents === 'function') renderEvents();
 }
 
@@ -1667,24 +1668,24 @@ function renderMembers() {
 //   ※ 日後要增減相片，修改下面 ALBUMS 就得；
 //     photos.json 會自動同步輸出，方便你本地 / 其他工具讀取。
 // ============================================================
-// ★ 單一圖展：全部相片已統一改名為 images/gallery/photo1.jpg ~ photoN.jpg
-//   files 先用一個夠大嘅連續名單（photo1 ~ photo200），render 時會自動跳過 404，
-//   所以幾多張都出到齊，加相減相唔使再改呢度。
-//   （想精準一點嘅話，可以將下面 GALLERY_COUNT 設成你實際張數，例如 54）
-var GALLERY_COUNT = 200; // ← 如果知實際總數，改成該數字最穩陣（你截圖見到去到 photo39，暫設 200 保險）
-
-(function () {
-  var files = [];
-  for (var i = 1; i <= GALLERY_COUNT; i++) files.push("photo" + i + ".jpg");
-  window.__GALLERY_FILES__ = files; // 俾 photos.json 覆蓋邏輯用
-})();
-
 var ALBUMS = [
+  // 單一相簿：對應 images/gallery/photo1~N
+  // ※ 日後增減相片：改下面 files[] 就得
   {
-    folder: "gallery",                 // ← 對應 images/gallery/ 資料夾
-    title: { zh: "圖片展覽", en: "Photo Gallery" },
-    desc: { zh: "", en: "" },          // ← 唔顯示分類說明；想留一句可以填返
-    files: window.__GALLERY_FILES__    // ← photo1.jpg ~ photoN.jpg
+    folder: 'gallery',
+    files: [
+      'photo1.jpg','photo2.jpg','photo3.jpg','photo4.jpg','photo5.jpg',
+      'photo6.jpg','photo7.jpg','photo8.jpg','photo9.jpg','photo10.jpg',
+      'photo11.jpg','photo12.jpg','photo13.jpg','photo14.jpg','photo15.jpg',
+      'photo16.jpg','photo17.jpg','photo18.jpg','photo19.jpg','photo20.jpg',
+      'photo21.jpg','photo22.jpg','photo23.jpg','photo24.jpg','photo25.jpg',
+      'photo26.jpg','photo27.jpg','photo28.jpg','photo29.jpg','photo30.jpg',
+      'photo31.jpg','photo32.jpg','photo33.jpg','photo34.jpg','photo35.jpg',
+      'photo36.jpg','photo37.jpg','photo38.jpg','photo39.jpg','photo40.jpg',
+      'photo41.jpg','photo42.jpg','photo43.jpg','photo44.jpg','photo45.jpg',
+      'photo46.jpg','photo47.jpg','photo48.jpg','photo49.jpg','photo50.jpg',
+      'photo51.jpg','photo52.jpg','photo53.jpg','photo54.jpg'
+    ]
   }
 ];
 
@@ -1697,26 +1698,9 @@ function loadAlbums(callback) {
     try {
       if (xhr.status >= 200 && xhr.status < 300) {
         var data = JSON.parse(xhr.responseText);
-        if (data && Array.isArray(data.albums) && data.albums.length) {
-          // 成功讀到 photos.json → 用佢覆蓋（方便日後動態更新）
-          // 統一規格：最終路徑 = images/{folder}/{file}
-          // 兼容：file 已經寫咗 "lsgl/lsgl1.jpg" 呢種舊寫法 → 自動拆出 folder
-          ALBUMS = data.albums.map(function(a) {
-            var folder = a.folder || '';
-            var files = (a.files || []).map(function(f) {
-              var fn = String(f);
-              // 如果 file 本身已經含 "folder/..." 前綴，就拆開，避免變成 images/lsgl/lsgl/lsgl1.jpg
-              var m = fn.match(/^([^/]+)\/(.+)$/);
-              if (m) { folder = folder || m[1]; return m[2]; }
-              return fn;
-            });
-            return {
-              folder: folder,
-              title: a.title || { zh: "", en: "" },
-              desc: a.desc || { zh: "", en: "" },
-              files: files
-            };
-          });
+        // 新格式：{ folder, files[] } —— 直接覆蓋為單一相簿
+        if (data && data.folder && Array.isArray(data.files) && data.files.length) {
+          ALBUMS = [{ folder: data.folder, files: data.files }];
         }
       }
     } catch(e) {}
@@ -1814,44 +1798,37 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function renderAlbums() {
-  var root = document.getElementById('albumsRoot');
+  var root = document.getElementById('galleryGrid');
   if (!root) return;
-  var lang = document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
-  if (ALBUMS.length === 0) {
-    var err = window.__PHOTOS_ERROR__ || '相簿資料載入中…';
-    root.innerHTML = '<p class="album-desc">相簿資料載入中，或 photos.json 未找到。<br><small style="opacity:.6">（' + err + '）</small></p>';
+  if (!ALBUMS || !ALBUMS.length || !ALBUMS[0].files || !ALBUMS[0].files.length) {
+    root.innerHTML = '<p style="color:var(--ink-light);opacity:.7">相片載入中，或 images/gallery/ 內未找到 photo1.jpg ...</p>';
     return;
   }
+  var album = ALBUMS[0];
+  var base = (album.folder || '').replace(/\/$/, '');   // 移除尾端斜槓
+  var prefix = base ? 'images/' + base + '/' : 'images/';
+  var PLACEHOLDER = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3ENAME%3C/text%3E%3C/svg%3E';
   var html = '';
-  ALBUMS.forEach(function(album) {
-    html += '<div class="album">';
-    html += '<div class="album-head">';
-    html += '<h3>' + (album.title[lang] || album.title.zh) + '</h3>';
-    var d = album.desc ? (album.desc[lang] || album.desc.zh) : '';
-    if (d) html += '<p class="album-desc">' + d.replace(/\n/g, '<br>') + '</p>';
-    html += '</div>';
-    html += '<div class="gallery-grid">';
-    // folder：呢個相簿對應 images/ 下嘅邊個資料夾（內嵌數據必有；photos.json 覆蓋時都會補返）
-    var folder = album.folder || '';
-    album.files.forEach(function(file) {
-      // file 只係檔名（如 lsgl1.jpg），統一拼成 images/{folder}/{file}
-      var name = String(file).replace(/\.[^/.]+$/, "");
-      var cleanName = name.replace(/^.*\//, ""); // 純檔名，用嚟做 alt / 佔位文字（唔再顯示 lsgl/lsgl1）
-      var safeName = cleanName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-      var src = 'images/' + folder + '/' + cleanName + '.jpg';
-      html += '<div class="gallery-item">';
-      // onerror：萬一某張圖 404，顯示文字佔位，唔會留白
-      html += '<img src="' + src + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3C/svg%3E\';">';
-      html += '<div class="gallery-overlay"><span>' + safeName + '</span></div>';
-      html += '</div>';
-    });
-    html += '</div>';
+  album.files.forEach(function(file) {
+    var safeName = String(file).replace(/\.[^/.]+$/, '');   // 去副檔名做 alt
+    var cleanName = safeName.replace(/^.*\//, '');
+    var escaped = cleanName.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    var src = prefix + file;
+    var placeholder = PLACEHOLDER.replace('NAME', encodeURIComponent(escaped));
+    html += '<div class="gallery-item">';
+    html += '<img src="' + src + '" alt="' + escaped + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + placeholder + '\';">';
+    html += '<div class="gallery-overlay"><span>' + escaped + '</span></div>';
     html += '</div>';
   });
   root.innerHTML = html;
-  // 為每張圖綁定點擊放大，並記低同相簿嘅所有圖（方便上下張切換）
-  bindGalleryClick(root);
+  // 綁定 Lightbox（點擊放大）—— 重用原有 bindGalleryClick
+  bindGalleryClick(document);
 }
+
+// 畀語言切換呼叫
+function renderGallery() { renderAlbums(); }
+
+
 
 /* ============================================================
    活動列表 — 由 events.json 動態渲染（響應式：桌面=表格、手機=卡片）
