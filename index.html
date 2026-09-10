@@ -881,15 +881,22 @@ html.lang-en .hero-title {
   .history-section, .rules-section, .culture-section, .events-section, .gallery-section, .founders-section { padding: 64px 24px; }
   .founders-grid { grid-template-columns: 1fr; max-width: 400px; margin: 56px auto 0; }
   .events-iframe-wrap iframe { height: 420px; }
-  .gallery-grid { grid-template-columns: 1fr 1fr; }
+  /* 平板：2 欄，確保每張圖都睇到 */
+  .gallery-grid { grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
   .gallery-item.wide { grid-column: span 2; }
   .gallery-item.tall { grid-row: span 1; aspect-ratio: 4/3; }
+  .gallery-item { aspect-ratio: 4/3; }
+  /* 手機/平板觸控：預設顯示名稱，唔使 hover */
+  .gallery-overlay { opacity: 1; padding: 12px; }
+  .gallery-overlay span { font-size: 12px; }
 }
 @media (max-width: 480px) {
   .schools-grid { grid-template-columns: 1fr; }
   .hero-subtitle { font-size: 13px; letter-spacing: 8px; }
-  .gallery-grid { grid-template-columns: 1fr; }
-  .gallery-item.wide { grid-column: span 1; aspect-ratio: 4/3; }
+  /* 手機：1 欄大圖，滑動就睇到 */
+  .gallery-grid { grid-template-columns: 1fr; gap: 14px; }
+  .gallery-item, .gallery-item.wide { grid-column: span 1; aspect-ratio: 4/3; }
+  .gallery-item.tall { aspect-ratio: 4/3; }
   .events-iframe-wrap iframe { height: 360px; }
 }
 </style>
@@ -1204,21 +1211,21 @@ html.lang-en .hero-title {
 
     <div class="founders-grid">
       <div class="founder-card">
-        <div class="founder-avatar">J</div>
-        <h4>James Tang</h4>
-        <div class="founder-role" data-i18n="founder_role2">創辦人 · 副主席</div>
-        <a href="https://wa.me/85261833877" target="_blank" rel="noopener" class="founder-whatsapp">
-          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          6183 3877
-        </a>
-      </div>
-      <div class="founder-card">
         <div class="founder-avatar">A</div>
         <h4>Adam Wan</h4>
         <div class="founder-role" data-i18n="founder_role1">創辦人 · 主席</div>
         <a href="https://wa.me/85261956036" target="_blank" rel="noopener" class="founder-whatsapp">
           <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           6195 6036
+        </a>
+      </div>
+      <div class="founder-card">
+        <div class="founder-avatar">J</div>
+        <h4>James Tang</h4>
+        <div class="founder-role" data-i18n="founder_role2">創辦人 · 副主席</div>
+        <a href="https://wa.me/85261833877" target="_blank" rel="noopener" class="founder-whatsapp">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          6183 3877
         </a>
       </div>
       <div class="founder-card">
@@ -1470,34 +1477,66 @@ function renderMembers() {
    ※ folder = images/ 下的資料夾名；files 只寫檔名（唔使寫 folder 前綴）
    ※ 最終路徑 = images/{folder}/{file}  →  例如 images/omu/omu3.jpg
    ============================================================ */
-var ALBUMS = [];   // 由 loadAlbums() 從 photos.json 填入
+// ============================================================
+//   圖展相簿資料 —— 直接內嵌喺 index.html 入面（唔再依賴外部 photos.json）
+//   ※ 改動邏輯：就算 photos.json 因 CORS / 網絡 / MIME 載入失敗，
+//     手機同平板都照樣睇到成個圖展（內嵌數據永遠有效）
+//   ※ 日後要增減相片，修改下面 ALBUMS 就得；
+//     photos.json 會自動同步輸出，方便你本地 / 其他工具讀取。
+// ============================================================
+var ALBUMS = [
+  {
+    title: { zh: "版面相", en: "Group Photos" },
+    desc: { zh: "隊伍大合照與集體回憶。", en: "Team group photos and shared memories." },
+    files: ["lsgl/lsgl1.jpg","lsgl/lsgl2.jpg","lsgl/lsgl3.jpg","lsgl/lsgl4.jpg","lsgl/lsgl5.jpg","lsgl/lsgl6.jpg"]
+  },
+  {
+    title: { zh: "練習花絮", en: "Training Moments" },
+    desc: { zh: "日常操練的汗水與堅持。", en: "Sweat and dedication in daily training." },
+    files: ["omu/omu1.jpg","omu/omu2.jpg","omu/omu3.jpg","omu/omu4.jpg","omu/omu5.jpg","omu/omu6.jpg","omu/omu7.jpg","omu/omu8.jpg","omu/omu9.jpg","omu/omu10.jpg","omu/omu11.jpg","omu/omu12.jpg","omu/omu13.jpg"]
+  },
+  {
+    title: { zh: "山谷聯", en: "Shan Guk Luen" },
+    desc: { zh: "山谷聯賽事的精彩瞬間。", en: "Highlights from the Shan Guk Luen regatta." },
+    files: ["sgl/sgl1.jpg","sgl/sgl2.jpg","sgl/sgl3.jpg","sgl/sgl4.jpg","sgl/sgl5.jpg","sgl/sgl6.jpg","sgl/sgl7.jpg","sgl/sgl8.jpg","sgl/sgl9.jpg","sgl/sgl10.jpg","sgl/sgl11.jpg","sgl/sgl12.jpg","sgl/sgl13.jpg"]
+  },
+  {
+    title: { zh: "端午節", en: "Dragon Boat Festival" },
+    desc: { zh: "端午競渡的振奮時刻。", en: "Exciting moments of the Tuen Ng race." },
+    files: ["efd/efd1.jpg","efd/efd2.jpg","efd/efd3.jpg","efd/efd4.jpg","efd/efd5.jpg","efd/efd6.jpg","efd/efd7.jpg","efd/efd8.jpg"]
+  },
+  {
+    title: { zh: "比賽日", en: "Race Day" },
+    desc: { zh: "比賽日的全力以赴。", en: "Giving it all on race day." },
+    files: ["dof/dof1.jpg","dof/dof2.jpg","dof/dof3.jpg","dof/dof4.jpg","dof/dof5.jpg","dof/dof6.jpg","dof/dof7.jpg","dof/dof8.jpg","dof/dof9.jpg","dof/dof10.jpg","dof/dof11.jpg","dof/dof12.jpg"]
+  }
+];
 
-// 將 photos.json 的 {folder, files} 轉成原本 renderAlbums 用的 {files:["folder/file"]} 格式
-function normalizeAlbums(data) {
-  return (data.albums || []).map(function(a) {
-    return {
-      title: a.title || { zh: "", en: "" },
-      desc: a.desc || { zh: "", en: "" },
-      files: (a.files || []).map(function(f) { return a.folder + "/" + f; })
-    };
-  });
-}
-
-// 從 photos.json 載入相簿資料（日後更新只改 json，唔使動 index.html）
+// photos.json 仍然會喺背景嘗試載入（可選，用嚟支援未來動態覆蓋）
+// ※ 就算完全載唔到，ALBUMS 已有內嵌數據，圖展完全唔受影響
 function loadAlbums(callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', 'photos.json', true);
   xhr.onload = function() {
-    if (xhr.status >= 200 && xhr.status < 300) {
-      try {
+    try {
+      if (xhr.status >= 200 && xhr.status < 300) {
         var data = JSON.parse(xhr.responseText);
-        ALBUMS = normalizeAlbums(data);
-      } catch(e) { ALBUMS = []; }
-    }
+        if (data && Array.isArray(data.albums) && data.albums.length) {
+          // 成功讀到 photos.json → 用佢覆蓋（方便日後動態更新）
+          ALBUMS = data.albums.map(function(a) {
+            return {
+              title: a.title || { zh: "", en: "" },
+              desc: a.desc || { zh: "", en: "" },
+              files: (a.files || []).map(function(f) { return a.folder + "/" + f; })
+            };
+          });
+        }
+      }
+    } catch(e) {}
     if (callback) callback();
   };
   xhr.onerror = function() { if (callback) callback(); };
-  xhr.send();
+  try { xhr.send(); } catch(e) { if (callback) callback(); }
 }
 
 function renderAlbums() {
@@ -1505,7 +1544,8 @@ function renderAlbums() {
   if (!root) return;
   var lang = document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
   if (ALBUMS.length === 0) {
-    root.innerHTML = '<p class="album-desc">相簿資料載入中，或 photos.json 未找到…</p>';
+    var err = window.__PHOTOS_ERROR__ || '相簿資料載入中…';
+    root.innerHTML = '<p class="album-desc">相簿資料載入中，或 photos.json 未找到。<br><small style="opacity:.6">（' + err + '）</small></p>';
     return;
   }
   var html = '';
@@ -1520,7 +1560,9 @@ function renderAlbums() {
     album.files.forEach(function(file) {
       var name = file.replace(/\.[^/.]+$/, "");
       html += '<div class="gallery-item">';
-      html += '<img src="images/' + file + '" alt="' + name + '" loading="lazy">';
+      // onerror：萬一某張圖 404，顯示文字佔位，唔會留白
+      // 手機上移除 loading="lazy" 都冇問題，呢度保留 lazy 但加 fallback
+      html += '<img src="images/' + file + '" alt="' + name + '" loading="lazy" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(name) + '%3C/text%3E%3C/svg%3E\';">';
       html += '<div class="gallery-overlay"><span>' + name + '</span></div>';
       html += '</div>';
     });
