@@ -749,25 +749,6 @@ html.lang-en .hero-title {
   background: var(--gold);
   flex-shrink: 0;
 }
-/* 創辦人：金色邊框 + 「發起人」角標 */
-.member-chip.founder {
-  border-color: var(--gold);
-  background: rgba(201,162,75,0.08);
-  font-weight: 600;
-}
-.member-chip.founder .member-dot { background: var(--gold); }
-.member-chip .member-badge {
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: #fff;
-  background: var(--gold);
-  border-radius: 3px;
-  padding: 1px 7px;
-  margin-left: 2px;
-  font-weight: 600;
-}
-/* 支援會員：藍點區分 */
-.member-chip.support .member-dot { background: var(--water); }
 .members-track-wrap::before,
 .members-track-wrap::after {
   content: '';
@@ -1174,21 +1155,21 @@ html.lang-en .hero-title {
 
     <div class="founders-grid">
       <div class="founder-card">
-        <div class="founder-avatar">A</div>
-        <h4>Adam Wan</h4>
-        <div class="founder-role" data-i18n="founder_role1">創辦人 · 主席</div>
-        <a href="https://wa.me/85261956036" target="_blank" rel="noopener" class="founder-whatsapp">
-          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          6195 6036
-        </a>
-      </div>
-      <div class="founder-card">
         <div class="founder-avatar">J</div>
         <h4>James Tang</h4>
         <div class="founder-role" data-i18n="founder_role2">創辦人 · 副主席</div>
         <a href="https://wa.me/85261833877" target="_blank" rel="noopener" class="founder-whatsapp">
           <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           6183 3877
+        </a>
+      </div>
+      <div class="founder-card">
+        <div class="founder-avatar">A</div>
+        <h4>Adam Wan</h4>
+        <div class="founder-role" data-i18n="founder_role1">創辦人 · 主席</div>
+        <a href="https://wa.me/85261956036" target="_blank" rel="noopener" class="founder-whatsapp">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          6195 6036
         </a>
       </div>
       <div class="founder-card">
@@ -1208,8 +1189,8 @@ html.lang-en .hero-title {
 <section class="members-section" id="members">
   <div class="members-inner">
     <div class="section-label" data-i18n="member_label">會 員 名 冊</div>
-    <h2 class="section-title"><span data-i18n="member_title_prefix">山谷聯會員</span> <span id="memberCount" style="color:var(--red);">0</span> <span data-i18n="member_title_suffix">人</span></h2>
-    <p class="section-intro" data-i18n="member_lead">一眾熱心會員，齊心撐本土龍舟文化。滑鼠放上去會暫停滾動。</p>
+    <h2 class="section-title"><span data-i18n="member_title_prefix">山谷聯龍舟隊會員</span> <span id="memberCount" style="color:var(--red);">0</span> <span data-i18n="member_title_suffix">人</span></h2>
+    <p class="section-intro" data-i18n="member_lead">一眾龍舟愛好者，同心協力，破浪前行。滑鼠懸停可暫停滾動。</p>
   </div>
   <div class="members-track-wrap">
     <div class="members-track" id="membersTrack1"></div>
@@ -1254,7 +1235,7 @@ var I18N = {
   nav_culture: { zh: "文化", en: "Culture" },
 
   hero_subtitle: { zh: "山 谷 聯 · 龍 舟 文 化 推 廣", en: "SHAN  GUK  LUEN · DRAGON  BOAT  CULTURE" },
-  hero_location: { zh: "大 嶼 山 梅 窩", en: "MAU  WO, LANTAU ISLAND" },
+  hero_location: { zh: "大 嶼 山 梅 窩", en: "MUI  WO, LANTAU ISLAND" },
   hero_title: { zh: "山谷聯龍舟人", en: "Shan Guk Luen Dragon Boat Team" },
   hero_desc: { zh: "鼓聲震天，槳影破浪。傳承千年龍舟文化，推廣龍舟運動，凝聚社區力量。", en: "Drums thunder, paddles cut the waves. Carrying forward a millennium of dragon boat culture, promoting the sport, and uniting our community." },
   hero_scroll: { zh: "向下滑動", en: "Scroll Down" },
@@ -1388,8 +1369,36 @@ function switchLang(lang) {
   document.documentElement.classList.toggle('lang-en', lang === 'en');
   try { localStorage.setItem('lang', lang); } catch(e) {}
   if (typeof renderAlbums === 'function') renderAlbums();
-  if (typeof renderMembers === 'function') renderMembers();
 }
+
+/* ============================================================
+   會員名冊 — 跑馬燈數據（同步自飛書表格）
+   ※ 要增減會員，改下面 MEMBERS 陣列，或直接話我知
+   ============================================================ */
+var MEMBERS = [
+  "Adam Wan", "James Tang", "B Leung", "Man Lung", "阿傑", "阿強",
+  "阿明", "阿珍", "阿娟", "家豪", "志偉", "麗華", "建邦", "美琳",
+  "Daniel", "Tommy", "Rachel", "Kevin", "Sandy", "Eric", "阿波", "阿龍"
+];
+
+function renderMembers() {
+  var t1 = document.getElementById('membersTrack1');
+  var t2 = document.getElementById('membersTrack2');
+  var countEl = document.getElementById('memberCount');
+  if (!t1 || !t2) return;
+
+  // 複製一份拼成無縫循環（marquee 移動 -50% 時恰好銜接）
+  var html = '';
+  MEMBERS.forEach(function(name) {
+    html += '<div class="member-chip"><span class="member-dot"></span>' + name + '</div>';
+  });
+  var doubled = html + html;
+  t1.innerHTML = doubled;
+  t2.innerHTML = doubled;
+
+  if (countEl) countEl.textContent = MEMBERS.length;
+}
+
 
 /* ============================================================
    圖展相簿資料 — 新增圖庫內容
@@ -1413,10 +1422,7 @@ var ALBUMS = [
   },
   {
     title: { zh: "山谷聯龍舟隊", en: "Shan Guk Luen Dragon Boat Team" },
-    desc: {
-      zh: "山谷聯龍舟人，一班熱愛龍舟嘅朋友組成。隊伍入面有唔同背景、唔同年紀嘅人，大家因為鍾意扒龍舟走埋一齊。\n不論係平日河邊練船，定係落場參加比賽，團隊最看重嘅就係齊心協力。一槳一槳，全隊人步伐一致，先可以令龍舟向前衝。呢份唔只係競技，更加係隊友之間互相扶持、一齊流汗嘅情誼。\n呢輯相片記低佢哋練習、出賽嘅點滴，留住山谷聯龍舟人喺水面上奮力划槳、彼此同心嘅每一個時刻。",
-      en: "The Shan Guk Luen Dragon Boat Team is a group of friends who share a love for dragon boating. The crew brings together people from all walks of life and of different ages, drawn together by their passion for paddling.\nWhether it's training by the river on an ordinary day or diving into a real race, what matters most to the team is pulling together as one. Stroke after stroke, the whole crew moving in sync — that's what drives the dragon boat forward. This is more than just competition; it's the bond between teammates who support each other and sweat it out together.\nThese photos capture the little moments of their training and racing, preserving every time the Shan Guk Luen paddlers dug deep on the water's surface, heart and oar as one."
-    },
+    desc: { zh: "", en: "" },
     files: ["SGL/SGL1.jpg","SGL/SGL2.jpg","SGL/SGL3.jpg","SGL/SGL4.jpg","SGL/SGL5.jpg","SGL/SGL6.jpg","SGL/SGL7.jpg","SGL/SGL8.jpg","SGL/SGL9.jpg","SGL/SGL10.jpg","SGL/SGL11.jpg","SGL/SGL12.jpg","SGL/SGL13.jpg"]
   },
   {
@@ -1437,65 +1443,6 @@ var ALBUMS = [
   }
 ];
 
-/* ============================================================
-   會員名冊 — 跑馬燈數據（創辦人排最前，加「發起人」角標）
-   如需增減會員，改下面 MEMBERS 陣列即可；
-   或用飛書表格管理，改動後同步到這裡。
-   role: 'founder' = 創辦人（金色角標）, 'member' = 普通會員, 'support' = 支援會員
-   ============================================================ */
-var MEMBERS = [
-  // 創辦人（發起人）— 固定排最前
-  { name: { zh: "Adam Wan",   en: "Adam Wan"   }, role: "founder", badge: { zh: "發起人", en: "Founder" } },
-  { name: { zh: "James Tang", en: "James Tang" }, role: "founder", badge: { zh: "發起人", en: "Founder" } },
-  { name: { zh: "B Leung",    en: "B Leung"    }, role: "founder", badge: { zh: "發起人", en: "Founder" } },
-  // 普通會員
-  { name: { zh: "會員 A", en: "Member A" } },
-  { name: { zh: "會員 B", en: "Member B" } },
-  { name: { zh: "會員 C", en: "Member C" } },
-  { name: { zh: "會員 D", en: "Member D" } },
-  { name: { zh: "會員 E", en: "Member E" } },
-  { name: { zh: "會員 F", en: "Member F" } },
-  { name: { zh: "會員 G", en: "Member G" } },
-  { name: { zh: "會員 H", en: "Member H" } },
-  { name: { zh: "會員 I", en: "Member I" } },
-  { name: { zh: "會員 J", en: "Member J" } },
-  // 支援會員
-  { name: { zh: "支援會員 1", en: "Support 1" }, role: "support" },
-  { name: { zh: "支援會員 2", en: "Support 2" }, role: "support" },
-  { name: { zh: "支援會員 3", en: "Support 3" }, role: "support" },
-  { name: { zh: "支援會員 4", en: "Support 4" }, role: "support" },
-  { name: { zh: "支援會員 5", en: "Support 5" }, role: "support" }
-];
-
-function renderMembers() {
-  var t1 = document.getElementById('membersTrack1');
-  var t2 = document.getElementById('membersTrack2');
-  var countEl = document.getElementById('memberCount');
-  if (!t1 || !t2) return;
-
-  // 人數計入標題
-  if (countEl) countEl.textContent = MEMBERS.length;
-
-  var lang = document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
-
-  function chip(m) {
-    var role = m.role || 'member';
-    var dot = '<span class="member-dot"></span>';
-    var badge = '';
-    if (role === 'founder' && m.badge) {
-      badge = '<span class="member-badge">' + (m.badge[lang] || m.badge.zh) + '</span>';
-    }
-    var nm = (typeof m.name === 'object') ? (m.name[lang] || m.name.zh) : m.name;
-    return '<span class="member-chip ' + role + '">' + dot + '<span>' + nm + '</span>' + badge + '</span>';
-  }
-
-  // 複製一份接尾，實現無縫 loop（marquee 移動 -50% 剛好一整組）
-  var html = MEMBERS.map(chip).join('');
-  var dup = html + html;
-  t1.innerHTML = dup;
-  t2.innerHTML = dup;
-}
-
 function renderAlbums() {
   var root = document.getElementById('albumsRoot');
   if (!root) return;
@@ -1506,7 +1453,7 @@ function renderAlbums() {
     html += '<div class="album-head">';
     html += '<h3>' + (album.title[lang] || album.title.zh) + '</h3>';
     var d = album.desc ? (album.desc[lang] || album.desc.zh) : '';
-    if (d) html += '<p class="album-desc">' + d.replace(/\n/g, '<br>') + '</p>';
+    if (d) html += '<p class="album-desc">' + d + '</p>';
     html += '</div>';
     html += '<div class="gallery-grid">';
     album.files.forEach(function(file) {
@@ -1549,7 +1496,6 @@ document.addEventListener('DOMContentLoaded', function() {
   switchLang(saved);
 
   renderAlbums();
-  renderMembers();
   checkIframe();
 });
 </script>
