@@ -91,13 +91,19 @@ a { color: inherit; text-decoration: none; }
 }
 .hero-bg {
   position: absolute; inset: 0;
-  background: url("images/dkw1.jpg") center/cover no-repeat;  /* 頁面底圖 = dkw1.jpg */
-  /* 整體提亮：由 0.55 改 0.72，手機/平板睇唔會太暗；桌面仍保留暗角質感 */
+  background: #2a3444;  /* photoa1.jpg 載入失敗時嘅深色 fallback */
   filter: brightness(0.72) saturate(1.15);
-  /* 緩慢縮放動效，增加層次感 */
   transform: scale(1.0);
   animation: heroSlowZoom 20s ease-out forwards;
 }
+.hero-bg img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+}
+/* 響應式提亮（桌面 0.72 / 平板 0.82 / 手機 0.92），手機平板唔會太暗 */
+@media (max-width: 900px)  { .hero-bg { filter: brightness(0.82) saturate(1.15); } }
+@media (max-width: 600px)  { .hero-bg { filter: brightness(0.92) saturate(1.2); } }
 @keyframes heroSlowZoom {
   from { transform: scale(1.0); }
   to   { transform: scale(1.12); }
@@ -1046,7 +1052,9 @@ html.lang-en .hero-title {
 
 <!-- ===== Hero ===== -->
 <section class="hero">
-  <div class="hero-bg"></div>
+  <div class="hero-bg">
+    <img src="images/photoa1.jpg" alt="山谷聯龍舟人 Hero" onerror="this.onerror=null;this.style.display='none';">
+  </div>
   <div class="hero-content">
     <div class="hero-subtitle" data-i18n="hero_subtitle">山 谷 聯 · 龍 舟 文 化 推 廣</div>
     <div class="hero-location" data-i18n="hero_location">大 嶼 山 梅 窩</div>
@@ -1116,7 +1124,7 @@ html.lang-en .hero-title {
 
   <div class="intro-grid">
     <div class="intro-image">
-      <img src="images/dcf1.jpg" alt="龍舟競渡">
+      <img src="images/photob2.jpg" alt="水上的龍，千年的船">
     </div>
     <div class="intro-text">
       <p data-i18n="intro_p1">龍舟競渡的起源，民間流傳最廣的說法是為了紀念愛國詩人屈原。相傳屈原於五月初五投汨羅江殉國，百姓聞訊後划船打撈，並投粽子入江以免魚蝦傷其身軀，日後逐漸演變成端午賽龍舟的習俗。</p>
@@ -1197,7 +1205,7 @@ html.lang-en .hero-title {
 
     <div class="structure-grid">
       <div class="structure-image">
-        <img src="images/uwe1.jpg" alt="龍舟龍頭">
+        <img src="images/photoc3.jpg" alt="一條龍舟，渾然天成">
       </div>
       <div class="structure-list">
         <div class="structure-item">
