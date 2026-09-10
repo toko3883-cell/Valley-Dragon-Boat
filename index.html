@@ -92,11 +92,20 @@ a { color: inherit; text-decoration: none; }
 .hero-bg {
   position: absolute; inset: 0;
   background: url("images/dkw1.jpg") center/cover no-repeat;  /* 頁面底圖 = dkw1.jpg */
-  filter: brightness(0.55) saturate(1.1);
+  /* 整體提亮：由 0.55 改 0.72，手機/平板睇唔會太暗；桌面仍保留暗角質感 */
+  filter: brightness(0.72) saturate(1.15);
+  /* 緩慢縮放動效，增加層次感 */
+  transform: scale(1.0);
+  animation: heroSlowZoom 20s ease-out forwards;
+}
+@keyframes heroSlowZoom {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.12); }
 }
 .hero-bg::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(30,42,56,0.3) 0%, rgba(30,42,56,0.55) 60%, rgba(245,240,232,1) 100%);
+  /* 手機上疊加層減弱，只留底部漸變過渡，避免一片黑 */
+  background: linear-gradient(180deg, rgba(30,42,56,0.15) 0%, rgba(30,42,56,0.35) 55%, rgba(245,240,232,1) 100%);
 }
 .hero-content {
   position: relative; z-index: 2;
@@ -889,6 +898,9 @@ html.lang-en .hero-title {
   /* 手機/平板觸控：預設顯示名稱，唔使 hover */
   .gallery-overlay { opacity: 1; padding: 12px; }
   .gallery-overlay span { font-size: 12px; }
+  /* 平板：底圖再提亮少少 */
+  .hero-bg { filter: brightness(0.82) saturate(1.15); }
+  .hero-bg::after { background: linear-gradient(180deg, rgba(30,42,56,0.1) 0%, rgba(30,42,56,0.25) 55%, rgba(245,240,232,1) 100%); }
 }
 @media (max-width: 480px) {
   .schools-grid { grid-template-columns: 1fr; }
@@ -898,6 +910,106 @@ html.lang-en .hero-title {
   .gallery-item, .gallery-item.wide { grid-column: span 1; aspect-ratio: 4/3; }
   .gallery-item.tall { aspect-ratio: 4/3; }
   .events-iframe-wrap iframe { height: 360px; }
+  /* 手機：底圖最亮，文字保持清晰；解決「背底圖好暗」問題 */
+  .hero { min-height: 520px; }
+  .hero-bg { filter: brightness(0.92) saturate(1.2); }
+  .hero-bg::after { background: linear-gradient(180deg, rgba(30,42,56,0.05) 0%, rgba(30,42,56,0.2) 55%, rgba(245,240,232,1) 100%); }
+  .hero-desc { color: rgba(245,240,232,0.95); }
+}
+/* ===== 圖展：點擊放大（Lightbox） ===== */
+.gallery-item { cursor: zoom-in; }
+.lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(10,14,20,0.92);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.28s ease;
+  backdrop-filter: blur(6px);
+}
+.lightbox.open { opacity: 1; visibility: visible; }
+.lightbox-img {
+  max-width: 92vw; max-height: 82vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transform: scale(0.94);
+  transition: transform 0.3s cubic-bezier(.2,.8,.3,1.2);
+}
+.lightbox.open .lightbox-img { transform: scale(1); }
+.lightbox-close {
+  position: absolute; top: 22px; right: 26px;
+  width: 44px; height: 44px; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.12); color: #fff;
+  border-radius: 50%; font-size: 26px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.28); }
+.lightbox-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 48px; height: 48px; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.12); color: #fff;
+  border-radius: 50%; font-size: 24px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lightbox-nav:hover { background: rgba(255,255,255,0.28); }
+.lightbox-prev { left: 18px; }
+.lightbox-next { right: 18px; }
+.lightbox-caption {
+  position: absolute; bottom: 26px; left: 0; right: 0;
+  text-align: center; color: rgba(255,255,255,0.85);
+  font-size: 14px; letter-spacing: 1px;
+}
+@media (max-width: 640px) {
+  .lightbox-nav { width: 40px; height: 40px; font-size: 20px; }
+  .lightbox-prev { left: 8px; }
+  .lightbox-next { right: 8px; }
+  .lightbox-img { max-width: 96vw; max-height: 74vh; }
+}
+
+/* ===== 初衷與宗旨 ===== */
+.mission-section { background: var(--paper); padding: 96px 0 104px; position: relative; overflow: hidden; }
+.mission-vision {
+  max-width: 860px; margin: 0 auto 72px; text-align: center;
+  padding: 40px 44px;
+  background: linear-gradient(135deg, rgba(184,35,47,0.04), rgba(201,162,75,0.06));
+  border-left: 4px solid var(--red);
+  border-radius: 0 14px 14px 0;
+}
+.mission-vision .vision-label {
+  display: inline-block; font-size: 13px; letter-spacing: 6px; font-weight: 700;
+  color: var(--red); margin-bottom: 18px;
+}
+.mission-vision blockquote {
+  font-family: 'Noto Serif SC', serif; font-size: 19px; line-height: 2;
+  color: var(--ink); margin: 0 0 16px; font-weight: 500;
+}
+.mission-vision blockquote .hl { color: var(--red); font-weight: 700; }
+.mission-vision .vision-attrib { font-size: 14px; color: var(--ink-light); letter-spacing: 2px; }
+
+.mission-pillars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
+.mission-card {
+  background: #fff; border-radius: 16px; padding: 34px 32px 30px;
+  box-shadow: 0 10px 30px rgba(30,42,56,0.06);
+  border: 1px solid rgba(184,35,47,0.08);
+  transition: transform .3s ease, box-shadow .3s ease;
+  position: relative;
+}
+.mission-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(184,35,47,0.12); }
+.mission-card .mc-num {
+  font-family: 'Noto Serif SC', serif; font-size: 40px; font-weight: 900;
+  color: var(--red); opacity: .18; line-height: 1; margin-bottom: 8px;
+}
+.mission-card .mc-icon { font-size: 30px; margin-bottom: 14px; }
+.mission-card h3 { font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 10px; letter-spacing: 1px; }
+.mission-card p { font-size: 14.5px; color: var(--ink-light); line-height: 1.85; }
+@media (max-width: 760px) {
+  .mission-section { padding: 64px 0 72px; }
+  .mission-vision { margin-bottom: 48px; padding: 30px 22px; }
+  .mission-vision blockquote { font-size: 16.5px; line-height: 1.9; }
+  .mission-pillars { grid-template-columns: 1fr; gap: 18px; }
+  .mission-card { padding: 26px 22px 24px; }
 }
 </style>
 </head>
@@ -915,6 +1027,7 @@ html.lang-en .hero-title {
     龍舟
   </div>
   <ul class="nav-links">
+    <li><a href="#mission" data-i18n="nav_mission">初衷與宗旨</a></li>
     <li><a href="#intro" data-i18n="nav_intro">簡介</a></li>
     <li><a href="#history" data-i18n="nav_history">歷史</a></li>
     <li><a href="#structure" data-i18n="nav_structure">結構</a></li>
@@ -946,6 +1059,52 @@ html.lang-en .hero-title {
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M12 5v14M5 12l7 7 7-7"/>
     </svg>
+  </div>
+</section>
+
+
+<!-- ===== 初衷與宗旨 ===== -->
+<section class="mission-section" id="mission">
+  <div class="container">
+    <div class="section-label" data-i18n="mission_label">初 衷 與 宗 旨</div>
+    <h2 class="section-title" data-i18n="mission_title">因為怕佢失傳，所以我哋重新執起支槳</h2>
+
+    <div class="mission-vision">
+      <span class="vision-label" data-i18n="mission_vision_label">創 辦 初 衷</span>
+      <blockquote data-i18n="mission_vision">
+        大嶼山梅窩三面環山、一面臨海，龍舟曾係呢片海面上最熱鬧嘅聲音。歲月流轉，年輕人陸續搬出，會扒龍舟嘅人手一代比一代少——<span class="hl">我哋正正係喺「怕佢失傳」嘅心情下，重新組起山谷聯龍舟人。</span>唔為攞冠軍，而係想留住屬於海邊人家嘅手藝同情誼，等下一代都仲識得聽鼓聲、執起槳。<br><br>
+        <span class="hl">龍舟唔只係一場比賽，而係我哋點樣記住自己從邊度來。</span>
+      </blockquote>
+      <div class="vision-attrib" data-i18n="mission_attrib">—— 山谷聯龍舟人 · 創辦團隊</div>
+    </div>
+
+    <div class="section-label" style="text-align:center;margin-bottom:14px;" data-i18n="mission_pillars_label">我 哋 的 宗 旨</div>
+    <div class="mission-pillars">
+      <div class="mission-card">
+        <div class="mc-num">01</div>
+        <div class="mc-icon">🏛️</div>
+        <h3 data-i18n="mission_h1">傳承文化</h3>
+        <p data-i18n="mission_d1">保存扒龍舟嘅技藝、號子、儀式同記憶，等呢項流傳千年嘅民間文化，喺梅窩唔會斷。</p>
+      </div>
+      <div class="mission-card">
+        <div class="mc-num">02</div>
+        <div class="mc-icon">🚣</div>
+        <h3 data-i18n="mission_h2">推廣運動</h3>
+        <p data-i18n="mission_d2">開放予所有年齡、背景嘅人參與，由新手體驗日到常規訓練——扒龍舟，幾歲都得。</p>
+      </div>
+      <div class="mission-card">
+        <div class="mc-num">03</div>
+        <div class="mc-icon">🤝</div>
+        <h3 data-i18n="mission_h3">凝聚社區</h3>
+        <p data-i18n="mission_d3">以一艘龍舟為緣，將街坊、會員、家庭連埋一齊。唔分你我，齊上齊落，共度端午、共赴競渡。</p>
+      </div>
+      <div class="mission-card">
+        <div class="mc-num">04</div>
+        <div class="mc-icon">🔥</div>
+        <h3 data-i18n="mission_h4">弘揚精神</h3>
+        <p data-i18n="mission_d4">鼓聲震天、槳影破浪，龍舟教識我哋最重要一課——同心協力，先划得過逆境。</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1268,7 +1427,7 @@ html.lang-en .hero-title {
   <div class="footer-brand" data-i18n="footer_brand">山谷聯龍舟人</div>
   <div class="footer-divider"></div>
   <p data-i18n="footer_slogan">傳承龍舟文化 · 推廣龍舟運動 · 凝聚社區力量</p>
-  <p style="margin-top:12px; opacity:0.75; font-size:13px;" data-i18n="footer_photo">大會指定攝影師：Man Lung</p>
+  <p style="margin-top:12px; opacity:0.75; font-size:13px;" data-i18n="footer_photo">大會指定攝影師：萬隆（Man Lung）</p>
   <p style="margin-top:8px; opacity:0.6;" data-i18n="footer_copy">© 2026 山谷聯龍舟隊 版權所有</p>
 </footer>
 
@@ -1397,6 +1556,22 @@ var I18N = {
   cul_h3: { zh: "趁景聯誼", en: "Festive Gathering" },
   cul_d3: { zh: "東莞一帶嘅「趁景」習俗，龍舟在江面相遇自發切磋競速，不設名次，聚散自由，盡顯鄉里情誼。", en: "In Dongguan, the 'chenjing' custom sees dragon boats meeting on the river and racing spontaneously — no rankings, free to gather or disperse, full of neighbourhood camaraderie." },
 
+
+  mission_label: { zh: "初 衷 與 宗 旨", en: "OUR  VISION  &  MISSION" },
+  mission_title: { zh: "因為怕佢失傳，所以我哋重新執起支槳", en: "We Picked Up the Paddle Again, For Fear It Might Be Lost" },
+  mission_vision_label: { zh: "創 辦 初 衷", en: "OUR  FOUNDING  VISION" },
+  mission_vision: { zh: "大嶼山梅窩三面環山、一面臨海，龍舟曾係呢片海面上最熱鬧嘅聲音。歲月流轉，年輕人陸續搬出，會扒龍舟嘅人手一代比一代少——我哋正正係喺「怕佢失傳」嘅心情下，重新組起山谷聯龍舟人。唔為攞冠軍，而係想留住屬於海邊人家嘅手藝同情誼，等下一代都仲識得聽鼓聲、執起槳。\n\n龍舟唔只係一場比賽，而係我哋點樣記住自己從邊度來。", en: "Nestled between mountains and the sea in Mui Wo, Lantau, dragon boat racing was once the heartbeat of our waters. As younger generations moved away, fewer hands remained to row — and it was precisely that fear of losing it that led us to rebuild the Shan Guk Luen Dragon Boat Team. Not to chase trophies, but to safeguard the craft and bond of the people of the sea, so the next generation still knows the sound of the drum and the pull of the paddle.\n\nThe dragon boat is not just a race — it is how we remember where we came from." },
+  mission_attrib: { zh: "—— 山谷聯龍舟人 · 創辦團隊", en: "— Shan Guk Luen Dragon Boat, Founding Team" },
+  mission_pillars_label: { zh: "我 哋 的 宗 旨", en: "OUR  MISSION" },
+  mission_h1: { zh: "傳承文化", en: "Preserve the Heritage" },
+  mission_d1: { zh: "保存扒龍舟嘅技藝、號子、儀式同記憶，等呢項流傳千年嘅民間文化，喺梅窩唔會斷。", en: "Protect the craft, chants, rituals and memories of dragon boating, so this millennium-old folk culture lives on in Mui Wo." },
+  mission_h2: { zh: "推廣運動", en: "Promote the Sport" },
+  mission_d2: { zh: "開放予所有年齡、背景嘅人參與，由新手體驗日到常規訓練——扒龍舟，幾歲都得。", en: "Open to all ages and backgrounds, from taster days to regular training — anyone, at any age, can take up the paddle." },
+  mission_h3: { zh: "凝聚社區", en: "Unite the Community" },
+  mission_d3: { zh: "以一艘龍舟為緣，將街坊、會員、家庭連埋一齊。唔分你我，齊上齊落，共度端午、共赴競渡。", en: "One boat brings neighbours, members and families together — no divisions, rowing as one, through every Duanwu and every race." },
+  mission_h4: { zh: "弘揚精神", en: "Champion the Spirit" },
+  mission_d4: { zh: "鼓聲震天、槳影破浪，龍舟教識我哋最重要一課——同心協力，先划得過逆境。", en: "Drums roar, paddles cut through the waves — the dragon boat teaches us one vital lesson: only by pulling together can we get through rough waters." },
+  nav_mission: { zh: "初衷與宗旨", en: "Vision & Mission" },
   founder_label: { zh: "創 辦 團 隊", en: "FOUNDING  TEAM" },
   founder_title: { zh: "三位創辦人，一份初心", en: "Three Founders, One Original Intention" },
   founder_lead: { zh: "山谷聯龍舟隊由三位熱愛龍舟運動嘅創辦人攜手成立，致力推廣龍舟文化，帶動社區參與。有興趣加入或查詢，歡迎直接 WhatsApp 聯絡。", en: "The Shan Guk Luen Dragon Boat Team was founded by three lovers of the sport, dedicated to promoting dragon boat culture and community participation. To join or enquire, feel free to contact us directly on WhatsApp." },
@@ -1413,7 +1588,7 @@ var I18N = {
 
   footer_brand: { zh: "山谷聯龍舟人", en: "Shan Guk Luen Dragon Boat" },
   footer_slogan: { zh: "傳承龍舟文化 · 推廣龍舟運動 · 凝聚社區力量", en: "Heritage · Promotion · Community" },
-  footer_photo: { zh: "大會指定攝影師：Man Lung", en: "Official Photographer: Man Lung" },
+  footer_photo: { zh: "大會指定攝影師：萬隆（Man Lung）", en: "Official Photographer: Man Lung (萬隆)" },
   footer_copy: { zh: "© 2026 山谷聯龍舟隊 版權所有", en: "© 2026 Shan Guk Luen Dragon Boat Team. All rights reserved." }
 };
 
@@ -1439,7 +1614,7 @@ function switchLang(lang) {
    ※ 要增減會員，改下面 MEMBERS 陣列，或直接話我知
    ============================================================ */
 var MEMBERS = [
-  "Adam Wan", "James Tang", "B Leung", "Man Lung", "阿傑", "阿強",
+  "Adam Wan", "James Tang", "B Leung", "萬隆", "阿傑", "阿強",
   "阿明", "阿珍", "阿娟", "家豪", "志偉", "麗華", "建邦", "美琳",
   "Daniel", "Tommy", "Rachel", "Kevin", "Sandy", "Eric", "阿波", "阿龍"
 ];
@@ -1486,29 +1661,34 @@ function renderMembers() {
 // ============================================================
 var ALBUMS = [
   {
+    folder: "lsgl",
     title: { zh: "版面相", en: "Group Photos" },
     desc: { zh: "隊伍大合照與集體回憶。", en: "Team group photos and shared memories." },
-    files: ["lsgl/lsgl1.jpg","lsgl/lsgl2.jpg","lsgl/lsgl3.jpg","lsgl/lsgl4.jpg","lsgl/lsgl5.jpg","lsgl/lsgl6.jpg"]
+    files: ["lsgl1.jpg","lsgl2.jpg","lsgl3.jpg","lsgl4.jpg","lsgl5.jpg","lsgl6.jpg"]
   },
   {
+    folder: "omu",
     title: { zh: "練習花絮", en: "Training Moments" },
     desc: { zh: "日常操練的汗水與堅持。", en: "Sweat and dedication in daily training." },
-    files: ["omu/omu1.jpg","omu/omu2.jpg","omu/omu3.jpg","omu/omu4.jpg","omu/omu5.jpg","omu/omu6.jpg","omu/omu7.jpg","omu/omu8.jpg","omu/omu9.jpg","omu/omu10.jpg","omu/omu11.jpg","omu/omu12.jpg","omu/omu13.jpg"]
+    files: ["omu1.jpg","omu2.jpg","omu3.jpg","omu4.jpg","omu5.jpg","omu6.jpg","omu7.jpg","omu8.jpg","omu9.jpg","omu10.jpg","omu11.jpg","omu12.jpg","omu13.jpg"]
   },
   {
+    folder: "sgl",
     title: { zh: "山谷聯", en: "Shan Guk Luen" },
     desc: { zh: "山谷聯賽事的精彩瞬間。", en: "Highlights from the Shan Guk Luen regatta." },
-    files: ["sgl/sgl1.jpg","sgl/sgl2.jpg","sgl/sgl3.jpg","sgl/sgl4.jpg","sgl/sgl5.jpg","sgl/sgl6.jpg","sgl/sgl7.jpg","sgl/sgl8.jpg","sgl/sgl9.jpg","sgl/sgl10.jpg","sgl/sgl11.jpg","sgl/sgl12.jpg","sgl/sgl13.jpg"]
+    files: ["sgl1.jpg","sgl2.jpg","sgl3.jpg","sgl4.jpg","sgl5.jpg","sgl6.jpg","sgl7.jpg","sgl8.jpg","sgl9.jpg","sgl10.jpg","sgl11.jpg","sgl12.jpg","sgl13.jpg"]
   },
   {
+    folder: "efd",
     title: { zh: "端午節", en: "Dragon Boat Festival" },
     desc: { zh: "端午競渡的振奮時刻。", en: "Exciting moments of the Tuen Ng race." },
-    files: ["efd/efd1.jpg","efd/efd2.jpg","efd/efd3.jpg","efd/efd4.jpg","efd/efd5.jpg","efd/efd6.jpg","efd/efd7.jpg","efd/efd8.jpg"]
+    files: ["efd1.jpg","efd2.jpg","efd3.jpg","efd4.jpg","efd5.jpg","efd6.jpg","efd7.jpg","efd8.jpg"]
   },
   {
+    folder: "dof",
     title: { zh: "比賽日", en: "Race Day" },
     desc: { zh: "比賽日的全力以赴。", en: "Giving it all on race day." },
-    files: ["dof/dof1.jpg","dof/dof2.jpg","dof/dof3.jpg","dof/dof4.jpg","dof/dof5.jpg","dof/dof6.jpg","dof/dof7.jpg","dof/dof8.jpg","dof/dof9.jpg","dof/dof10.jpg","dof/dof11.jpg","dof/dof12.jpg"]
+    files: ["dof1.jpg","dof2.jpg","dof3.jpg","dof4.jpg","dof5.jpg","dof6.jpg","dof7.jpg","dof8.jpg","dof9.jpg","dof10.jpg","dof11.jpg","dof12.jpg"]
   }
 ];
 
@@ -1523,11 +1703,22 @@ function loadAlbums(callback) {
         var data = JSON.parse(xhr.responseText);
         if (data && Array.isArray(data.albums) && data.albums.length) {
           // 成功讀到 photos.json → 用佢覆蓋（方便日後動態更新）
+          // 統一規格：最終路徑 = images/{folder}/{file}
+          // 兼容：file 已經寫咗 "lsgl/lsgl1.jpg" 呢種舊寫法 → 自動拆出 folder
           ALBUMS = data.albums.map(function(a) {
+            var folder = a.folder || '';
+            var files = (a.files || []).map(function(f) {
+              var fn = String(f);
+              // 如果 file 本身已經含 "folder/..." 前綴，就拆開，避免變成 images/lsgl/lsgl/lsgl1.jpg
+              var m = fn.match(/^([^/]+)\/(.+)$/);
+              if (m) { folder = folder || m[1]; return m[2]; }
+              return fn;
+            });
             return {
+              folder: folder,
               title: a.title || { zh: "", en: "" },
               desc: a.desc || { zh: "", en: "" },
-              files: (a.files || []).map(function(f) { return a.folder + "/" + f; })
+              files: files
             };
           });
         }
@@ -1538,6 +1729,93 @@ function loadAlbums(callback) {
   xhr.onerror = function() { if (callback) callback(); };
   try { xhr.send(); } catch(e) { if (callback) callback(); }
 }
+
+/* ============================================================
+   Lightbox：點擊圖展圖片 → 全屏放大，可上下張切換、滑動（手機）
+   ============================================================ */
+var lbIndex = 0;
+var lbList = [];
+
+function bindGalleryClick(root) {
+  // 收集呢個相簿區塊入面所有圖，建立可切換清單
+  var items = root.querySelectorAll('.gallery-item img');
+  items.forEach(function(img) {
+    img.addEventListener('click', function() {
+      // 每次點擊重新收集當前可見嘅所有圖（含同一相簿）
+      lbList = Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el) { return el; });
+      lbIndex = lbList.indexOf(img);
+      openLightbox(img.src, img.alt);
+    });
+  });
+}
+
+function openLightbox(src, alt) {
+  var box = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lbImg');
+  var lbCap = document.getElementById('lbCaption');
+  if (!box) return;
+  lbImg.src = src;
+  lbCap.textContent = alt || '';
+  box.classList.add('open');
+  box.setAttribute('aria-hidden', 'false');
+}
+
+function closeLightbox() {
+  var box = document.getElementById('lightbox');
+  if (!box) return;
+  box.classList.remove('open');
+  box.setAttribute('aria-hidden', 'true');
+  // 清 src，避免下次打開閃舊圖
+  setTimeout(function() { document.getElementById('lbImg').src = ''; }, 300);
+}
+
+function showLightboxOffset(offset) {
+  if (lbList.length === 0) return;
+  lbIndex = (lbIndex + offset + lbList.length) % lbList.length;
+  var img = lbList[lbIndex];
+  var lbImg = document.getElementById('lbImg');
+  var lbCap = document.getElementById('lbCaption');
+  // 淡入切換效果
+  lbImg.style.opacity = '0.4';
+  setTimeout(function() {
+    lbImg.src = img.src;
+    lbCap.textContent = img.alt || '';
+    lbImg.style.opacity = '1';
+  }, 120);
+}
+
+// 事件委派：關閉、上下張、鍵盤、滑動
+document.addEventListener('DOMContentLoaded', function() {
+  var box = document.getElementById('lightbox');
+  if (!box) return;
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', function() { showLightboxOffset(-1); });
+  document.getElementById('lbNext').addEventListener('click', function() { showLightboxOffset(1); });
+  // 點背景（唔係按鈕、唔係圖）就關閉
+  box.addEventListener('click', function(e) {
+    if (e.target === box) closeLightbox();
+  });
+  // 鍵盤：Esc 關閉、← → 切換
+  document.addEventListener('keydown', function(e) {
+    if (!box.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') showLightboxOffset(-1);
+    if (e.key === 'ArrowRight') showLightboxOffset(1);
+  });
+  // 手機滑動手勢
+  var startX = 0, startY = 0, distX = 0;
+  box.addEventListener('touchstart', function(e) {
+    var t = e.changedTouches[0]; startX = t.pageX; startY = t.pageY; distX = 0;
+  }, { passive: true });
+  box.addEventListener('touchend', function(e) {
+    var t = e.changedTouches[0];
+    distX = t.pageX - startX;
+    var distY = t.pageY - startY;
+    if (Math.abs(distX) > 40 && Math.abs(distX) > Math.abs(distY)) {
+      showLightboxOffset(distX < 0 ? 1 : -1);  // 向左滑 = 下一張
+    }
+  }, { passive: true });
+});
 
 function renderAlbums() {
   var root = document.getElementById('albumsRoot');
@@ -1557,19 +1835,26 @@ function renderAlbums() {
     if (d) html += '<p class="album-desc">' + d.replace(/\n/g, '<br>') + '</p>';
     html += '</div>';
     html += '<div class="gallery-grid">';
+    // folder：呢個相簿對應 images/ 下嘅邊個資料夾（內嵌數據必有；photos.json 覆蓋時都會補返）
+    var folder = album.folder || '';
     album.files.forEach(function(file) {
-      var name = file.replace(/\.[^/.]+$/, "");
+      // file 只係檔名（如 lsgl1.jpg），統一拼成 images/{folder}/{file}
+      var name = String(file).replace(/\.[^/.]+$/, "");
+      var cleanName = name.replace(/^.*\//, ""); // 純檔名，用嚟做 alt / 佔位文字（唔再顯示 lsgl/lsgl1）
+      var safeName = cleanName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      var src = 'images/' + folder + '/' + cleanName + '.jpg';
       html += '<div class="gallery-item">';
       // onerror：萬一某張圖 404，顯示文字佔位，唔會留白
-      // 手機上移除 loading="lazy" 都冇問題，呢度保留 lazy 但加 fallback
-      html += '<img src="images/' + file + '" alt="' + name + '" loading="lazy" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(name) + '%3C/text%3E%3C/svg%3E\';">';
-      html += '<div class="gallery-overlay"><span>' + name + '</span></div>';
+      html += '<img src="' + src + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3C/svg%3E\';">';
+      html += '<div class="gallery-overlay"><span>' + safeName + '</span></div>';
       html += '</div>';
     });
     html += '</div>';
     html += '</div>';
   });
   root.innerHTML = html;
+  // 為每張圖綁定點擊放大，並記低同相簿嘅所有圖（方便上下張切換）
+  bindGalleryClick(root);
 }
 
 /* ============================================================
@@ -1648,5 +1933,14 @@ document.addEventListener('DOMContentLoaded', function() {
   loadEvents();
 });
 </script>
+<!-- ===== Lightbox：點圖放大 ===== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+  <button class="lightbox-close" id="lbClose" aria-label="關閉">×</button>
+  <button class="lightbox-nav lightbox-prev" id="lbPrev" aria-label="上一張">‹</button>
+  <img class="lightbox-img" id="lbImg" src="" alt="">
+  <button class="lightbox-nav lightbox-next" id="lbNext" aria-label="下一張">›</button>
+  <div class="lightbox-caption" id="lbCaption"></div>
+</div>
+
 </body>
 </html>
