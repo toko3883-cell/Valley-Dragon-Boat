@@ -943,6 +943,35 @@ html.lang-en .hero-title {
 }
 .footer p { line-height: 1.8; }
 
+/* ===== 閱讀人數（頁腳計數器） ===== */
+.read-stats {
+  max-width: 520px;
+  margin: 0 auto 30px;
+  padding: 22px 24px 20px;
+  border: 1px solid rgba(201,162,75,0.16);
+  border-radius: 12px;
+  background: rgba(245,240,232,0.03);
+}
+.read-stats .rs-line {
+  font-size: 12px;
+  letter-spacing: 4px;
+  text-indent: 4px;
+  color: rgba(245,240,232,0.5);
+  margin-bottom: 10px;
+}
+.read-stats .rs-line .dot { color: var(--gold); margin-right: 6px; }
+.read-stats .rs-num {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(15px, 2.2vw, 20px);  /* ★ 再細（原 22~30px → 15~20px） */
+  font-weight: 900;
+  color: var(--gold-light);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.read-stats .rs-num .unit { font-size: 10px; font-weight: 500; color: rgba(245,240,232,0.55); margin-left: 5px; letter-spacing: 1px; }
+.read-stats .rs-sub { font-size: 9.5px; color: rgba(245,240,232,0.35); margin-top: 8px; letter-spacing: 0.5px; }
+
 /* ===== 底部橫幅（圖 + 淺色文字） ===== */
 .footer-banner {
   position: relative;
@@ -993,6 +1022,8 @@ html.lang-en .hero-title {
 @media (max-width: 600px) {
   .footer-banner { height: 220px; }
   .footer-banner-content { padding-bottom: 28px; }
+  .mission-card .mc-foot { font-size: 30px; letter-spacing: 5px; text-indent: 5px; }
+  .read-stats { padding: 16px 14px 14px; margin-bottom: 22px; }
 }
 
 /* ===== 響應式 ===== */
@@ -1118,20 +1149,73 @@ html.lang-en .hero-title {
 
 .mission-pillars { display: grid; grid-template-columns: repeat(2, 1fr); gap: 26px; }
 .mission-card {
-  background: #fff; border-radius: 16px; padding: 34px 32px 30px;
+  background: #fff; border-radius: 16px; padding: 34px 32px 28px;
   box-shadow: 0 10px 30px rgba(30,42,56,0.06);
   border: 1px solid rgba(184,35,47,0.08);
   transition: transform .3s ease, box-shadow .3s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 340px;            /* ★ 預留空間俾中央大字 */
+  overflow: hidden;
 }
 .mission-card:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(184,35,47,0.12); }
 .mission-card .mc-num {
   font-family: 'Noto Serif SC', serif; font-size: 40px; font-weight: 900;
   color: var(--red); opacity: .18; line-height: 1; margin-bottom: 8px;
+  position: relative; z-index: 2;
 }
 .mission-card .mc-icon { font-size: 30px; margin-bottom: 14px; }
 .mission-card h3 { font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 10px; letter-spacing: 1px; }
 .mission-card p { font-size: 14.5px; color: var(--ink-light); line-height: 1.85; }
+
+/* 卡片正文：疊喺大字之上，保持可讀 */
+.mission-card .mc-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 0;
+  position: relative;
+  z-index: 2;                   /* ★ 內容喺大字之上 */
+}
+/* 卡片底部品牌字：絕對定位，垂直 + 水平置中（喺格嘅上下正中央），超大字 */
+.mission-card .mc-foot {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;                    /* ★ 垂直正中 */
+  transform: translateY(-50%);  /* ★ 精確上下中間 */
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(48px, 6.6vw, 72px);  /* ★ 超大（48~72px） */
+  font-weight: 900;
+  letter-spacing: 14px;
+  text-indent: 14px;           /* 補償 letter-spacing，確保真正置中 */
+  color: rgba(184,35,47,0.1);   /* ★ 再淺：極淡水印，似紙紋 */
+  line-height: 1.1;
+  white-space: nowrap;         /* 一字排開，撐滿卡寬 */
+  pointer-events: none;        /* 唔阻礙點擊 */
+  user-select: none;
+  z-index: 1;                  /* 喺背景內容之上、主文字之下 */
+  transition: color .3s ease, letter-spacing .3s ease;
+}
+.mission-card:hover .mc-foot {
+  color: rgba(184,35,47,0.24);  /* ★ hover 時先微微浮出，平時更收斂 */
+  letter-spacing: 16px;
+  text-indent: 16px;
+}
+/* 每張卡底部字用唔同淺色，增加層次（01-04 分別：淡紅 / 淡水藍 / 淡金 / 淡青） */
+/* ★ 大幅調淺：平時似淡淡水印，hover 先微微浮出 */
+.mission-card:nth-child(1) .mc-foot { color: rgba(184,35,47,0.12); }
+.mission-card:nth-child(2) .mc-foot { color: rgba(46,107,138,0.14); }
+.mission-card:nth-child(3) .mc-foot { color: rgba(201,162,75,0.2); }
+.mission-card:nth-child(4) .mc-foot { color: rgba(139,94,60,0.15); }
+.mission-card:nth-child(1):hover .mc-foot { color: rgba(184,35,47,0.3); }
+.mission-card:nth-child(2):hover .mc-foot { color: rgba(46,107,138,0.32); }
+.mission-card:nth-child(3):hover .mc-foot { color: rgba(201,162,75,0.4); }
+.mission-card:nth-child(4):hover .mc-foot { color: rgba(139,94,60,0.34); }
 @media (max-width: 760px) {
   .mission-section { padding: 64px 0 72px; }
   .mission-vision { margin-bottom: 48px; padding: 30px 22px; }
@@ -1211,27 +1295,39 @@ html.lang-en .hero-title {
     <div class="mission-pillars">
       <div class="mission-card">
         <div class="mc-num">01</div>
-        <div class="mc-icon">🏛️</div>
-        <h3 data-i18n="mission_h1">傳承文化</h3>
-        <p data-i18n="mission_d1">保存扒龍舟嘅技藝、號子、儀式同記憶，等呢項流傳千年嘅民間文化，喺梅窩唔會斷。</p>
+        <div class="mc-body">
+          <div class="mc-icon">🏛️</div>
+          <h3 data-i18n="mission_h1">傳承文化</h3>
+          <p data-i18n="mission_d1">保存扒龍舟嘅技藝、號子、儀式同記憶，等呢項流傳千年嘅民間文化，喺梅窩唔會斷。</p>
+        </div>
+        <div class="mc-foot" data-i18n="mission_foot">山谷聯龍舟人</div>
       </div>
       <div class="mission-card">
         <div class="mc-num">02</div>
-        <div class="mc-icon">🚣</div>
-        <h3 data-i18n="mission_h2">推廣運動</h3>
-        <p data-i18n="mission_d2">開放予所有年齡、背景嘅人參與，由新手體驗日到常規訓練——扒龍舟，幾歲都得。</p>
+        <div class="mc-body">
+          <div class="mc-icon">🚣</div>
+          <h3 data-i18n="mission_h2">推廣運動</h3>
+          <p data-i18n="mission_d2">開放予所有年齡、背景嘅人參與，由新手體驗日到常規訓練——扒龍舟，幾歲都得。</p>
+        </div>
+        <div class="mc-foot" data-i18n="mission_foot">山谷聯龍舟人</div>
       </div>
       <div class="mission-card">
         <div class="mc-num">03</div>
-        <div class="mc-icon">🤝</div>
-        <h3 data-i18n="mission_h3">凝聚社區</h3>
-        <p data-i18n="mission_d3">以一艘龍舟為緣，將街坊、會員、家庭連埋一齊。唔分你我，齊上齊落，共度端午、共赴競渡。</p>
+        <div class="mc-body">
+          <div class="mc-icon">🤝</div>
+          <h3 data-i18n="mission_h3">凝聚社區</h3>
+          <p data-i18n="mission_d3">以一艘龍舟為緣，將街坊、會員、家庭連埋一齊。唔分你我，齊上齊落，共度端午、共赴競渡。</p>
+        </div>
+        <div class="mc-foot" data-i18n="mission_foot">山谷聯龍舟人</div>
       </div>
       <div class="mission-card">
         <div class="mc-num">04</div>
-        <div class="mc-icon">🔥</div>
-        <h3 data-i18n="mission_h4">弘揚精神</h3>
-        <p data-i18n="mission_d4">鼓聲震天、槳影破浪，龍舟教識我哋最重要一課——同心協力，先划得過逆境。</p>
+        <div class="mc-body">
+          <div class="mc-icon">🔥</div>
+          <h3 data-i18n="mission_h4">弘揚精神</h3>
+          <p data-i18n="mission_d4">鼓聲震天、槳影破浪，龍舟教識我哋最重要一課——同心協力，先划得過逆境。</p>
+        </div>
+        <div class="mc-foot" data-i18n="mission_foot">山谷聯龍舟人</div>
       </div>
     </div>
   </div>
@@ -1542,6 +1638,11 @@ html.lang-en .hero-title {
 
 <!-- ===== 頁尾 ===== -->
 <footer class="footer">
+  <div class="read-stats">
+    <div class="rs-line"><span class="dot">●</span><span data-i18n="read_label">已有多少人認識山谷聯</span></div>
+    <div class="rs-num"><span id="readCount">0</span><span class="unit" data-i18n="read_unit">人閱讀</span></div>
+    <div class="rs-sub" data-i18n="read_sub">每次瀏覽 +1 · 數字儲存於本機瀏覽器</div>
+  </div>
   <div class="footer-brand" data-i18n="footer_brand">山谷聯龍舟人</div>
   <div class="footer-divider"></div>
   <p data-i18n="footer_slogan">傳承龍舟文化 · 推廣龍舟運動 · 凝聚社區力量</p>
@@ -1689,6 +1790,7 @@ var I18N = {
   mission_d3: { zh: "以一艘龍舟為緣，將街坊、會員、家庭連埋一齊。唔分你我，齊上齊落，共度端午、共赴競渡。", en: "One boat brings neighbours, members and families together — no divisions, rowing as one, through every Duanwu and every race." },
   mission_h4: { zh: "弘揚精神", en: "Champion the Spirit" },
   mission_d4: { zh: "鼓聲震天、槳影破浪，龍舟教識我哋最重要一課——同心協力，先划得過逆境。", en: "Drums roar, paddles cut through the waves — the dragon boat teaches us one vital lesson: only by pulling together can we get through rough waters." },
+  mission_foot: { zh: "山谷聯龍舟人", en: "Shan Guk Luen Dragon Boat" },
   nav_mission: { zh: "初衷與宗旨", en: "Vision & Mission" },
   founder_label: { zh: "創 辦 團 隊", en: "FOUNDING  TEAM" },
   founder_title: { zh: "三位創辦人，一份初心", en: "Three Founders, One Original Intention" },
@@ -1709,7 +1811,10 @@ var I18N = {
   banner_sub: { zh: "傳承文化 · 推廣運動 · 凝聚社區 · 弘揚精神", en: "Heritage · Sport · Community · Spirit" },
   footer_slogan: { zh: "傳承龍舟文化 · 推廣龍舟運動 · 凝聚社區力量", en: "Heritage · Promotion · Community" },
   footer_photo: { zh: "大會指定攝影師：萬隆（Man Lung）", en: "Official Photographer: Man Lung (萬隆)" },
-  footer_copy: { zh: "© 2026 山谷聯龍舟隊 版權所有", en: "© 2026 Shan Guk Luen Dragon Boat Team. All rights reserved." }
+  footer_copy: { zh: "© 2026 山谷聯龍舟隊 版權所有", en: "© 2026 Shan Guk Luen Dragon Boat Team. All rights reserved." },
+  read_label: { zh: "已有多少人認識山谷聯", en: "People Who Discovered Us" },
+  read_unit: { zh: "人閱讀", en: "views" },
+  read_sub: { zh: "每次瀏覽 +1 · 數字儲存於本機瀏覽器", en: "Increments per visit · Stored locally in your browser" }
 };
 
 function switchLang(lang) {
@@ -2046,6 +2151,28 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   // 活動通告：先試 announcements.json（可選），再用內嵌 ANNOUNCEMENTS 渲染
   loadAnnouncements(function() { renderFlyers(); });
+
+  // ===== 閱讀人數計數器（本地） =====
+  // START_BASE：起點基數，可按需要調大（例如 9800），令數字更真實
+  var START_BASE = 1280;
+  var KEY = 'sgl_read_count';
+  var el = document.getElementById('readCount');
+  if (el) {
+    var cur = 0;
+    try { cur = parseInt(localStorage.getItem(KEY), 10) || 0; } catch(e) {}
+    // 首次或不合法 → 由起點開始；之後每位新訪客 +1
+    if (!cur || cur < START_BASE) cur = START_BASE;
+    cur += 1;
+    try { localStorage.setItem(KEY, cur); } catch(e) {}
+    // 載入時由 0 滾動到目標值，幾秒內漸進，較有「跳動感」
+    var dur = 1200, fps = 30, steps = Math.round(dur / (1000 / fps)), n = 0;
+    var tick = setInterval(function() {
+      n++;
+      var v = Math.round(cur * (n / steps));
+      el.textContent = v.toLocaleString('zh-HK');
+      if (n >= steps) { clearInterval(tick); el.textContent = cur.toLocaleString('zh-HK'); }
+    }, 1000 / fps);
+  }
 });
 </script>
 <!-- ===== Lightbox：點圖放大 ===== -->
