@@ -594,6 +594,149 @@ html.lang-en .hero-title {
 }
 .et-register:active { background: var(--red-deep); }
 
+/* ===== 活動通告 · 宣傳單張網格 ===== */
+.flyers-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+  margin-top: 48px;
+}
+.flyer-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: var(--paper-dark);
+  box-shadow: 0 10px 30px rgba(30,42,56,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+.flyer-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 48px rgba(30,42,56,0.18);
+}
+.flyer-thumb {
+  position: relative;
+  aspect-ratio: 3 / 4;   /* 宣傳單張通常直幅，統一 3:4 */
+  overflow: hidden;
+}
+.flyer-thumb img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.flyer-card:hover .flyer-thumb img { transform: scale(1.06); }
+
+/* 狀態標籤：貼喺單張左上角 */
+.flyer-status {
+  position: absolute;
+  top: 14px; left: 14px;
+  z-index: 3;
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 1px;
+  backdrop-filter: blur(4px);
+}
+.flyers-grid .flyer-status.s-即將舉行 { background: rgba(46,107,138,0.9); }
+.flyers-grid .flyer-status.s-開放報名 { background: rgba(184,35,47,0.92); }
+.flyers-grid .flyer-status.s-報名截止 { background: rgba(154,116,32,0.95); }
+.flyers-grid .flyer-status.s-已結束   { background: rgba(58,74,92,0.85); }
+
+/* 放大鏡圖標（提示可點擊） */
+.flyer-zoom {
+  position: absolute;
+  top: 14px; right: 14px;
+  z-index: 3;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(30,42,56,0.55);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.flyer-card:hover .flyer-zoom { opacity: 1; }
+.flyer-zoom svg { width: 18px; height: 18px; }
+
+.flyer-info {
+  padding: 20px 22px 22px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.flyer-info h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.4;
+  margin-bottom: 10px;
+}
+.flyer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13px;
+  color: var(--red);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.flyer-meta .fm-time { color: var(--ink-light); font-weight: 500; }
+.flyer-info .desc {
+  font-size: 13.5px;
+  color: var(--ink-light);
+  line-height: 1.75;
+  flex: 1;
+  margin-bottom: 14px;
+}
+.flyer-info .desc .loc {
+  display: block;
+  color: var(--water);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+.flyer-info .desc .loc::before { content: "📍 "; }
+.flyer-register {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 9px 20px;
+  background: var(--red);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+.flyer-register:hover { background: var(--red-deep); transform: translateY(-1px); }
+.flyer-register.none { background: rgba(30,42,56,0.12); color: var(--ink-light); cursor: default; }
+.flyer-register.none:hover { background: rgba(30,42,56,0.12); transform: none; }
+
+/* 手機：2 欄 → 1 欄 */
+@media (max-width: 900px) {
+  .flyers-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+@media (max-width: 520px) {
+  .flyers-grid { grid-template-columns: 1fr; gap: 24px; }
+  .flyer-thumb { aspect-ratio: 4 / 3; }
+}
+.flyers-hint {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-light);
+  opacity: 0.75;
+}
+.flyers-hint code {
+  background: var(--paper-dark);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
 /* 手機/平板：表格變卡片 */
 @media (max-width: 900px) {
   .events-table .et-head { display: none; }
@@ -666,8 +809,11 @@ html.lang-en .hero-title {
   padding: 20px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  /* ★ 平時唔接收指針事件，點擊直接穿透到 img / .gallery-item，
+       唔會再擋住「點擊放大」；hover 顯示時先接收 */
+  pointer-events: none;
 }
-.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-item:hover .gallery-overlay { opacity: 1; pointer-events: auto; }
 .gallery-overlay span {
   color: var(--paper);
   font-size: 14px;
@@ -774,86 +920,6 @@ html.lang-en .hero-title {
 }
 .founder-whatsapp svg { width: 18px; height: 18px; fill: currentColor; }
 
-/* ===== 會員列表（滾動跑馬燈） ===== */
-.members-section {
-  background: var(--paper-dark);
-  padding: 80px 0;
-  overflow: hidden;
-}
-.members-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
-.members-track-wrap {
-  margin-top: 40px;
-  position: relative;
-}
-.members-track {
-  display: flex;
-  gap: 16px;
-  width: max-content;
-  animation: marquee 30s linear infinite;
-}
-.members-track.reverse {
-  animation: marquee-reverse 35s linear infinite;
-  margin-top: 16px;
-}
-.members-track:hover { animation-play-state: paused; }
-.member-chip {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  background: var(--paper);
-  border: 1px solid rgba(30,42,56,0.08);
-  border-radius: 40px;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--ink);
-  white-space: nowrap;
-  transition: all 0.25s ease;
-}
-.member-chip:hover {
-  border-color: var(--red);
-  color: var(--red);
-  transform: translateY(-2px);
-}
-.member-chip .member-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--gold);
-  flex-shrink: 0;
-}
-.members-track-wrap::before,
-.members-track-wrap::after {
-  content: '';
-  position: absolute; top: 0; bottom: 0;
-  width: 80px;
-  z-index: 2;
-  pointer-events: none;
-}
-.members-track-wrap::before {
-  left: 0;
-  background: linear-gradient(90deg, var(--paper-dark), transparent);
-}
-.members-track-wrap::after {
-  right: 0;
-  background: linear-gradient(-90deg, var(--paper-dark), transparent);
-}
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-@keyframes marquee-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
-.members-hint {
-  margin-top: 28px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--ink-light);
-  opacity: 0.7;
-}
-
 /* ===== 頁尾 ===== */
 .footer {
   background: #141D28;
@@ -934,14 +1000,18 @@ html.lang-en .hero-title {
 }
 .lightbox.open { opacity: 1; visibility: visible; }
 .lightbox-img {
-  max-width: 92vw; max-height: 82vh;
+  max-width: 96vw; max-height: 90vh;
+  width: auto; height: auto;
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
-  transform: scale(0.94);
+  transform: scale(0.96);
   transition: transform 0.3s cubic-bezier(.2,.8,.3,1.2);
+  cursor: zoom-in;
 }
 .lightbox.open .lightbox-img { transform: scale(1); }
+/* 點擊大圖本身 = 下一張（再大都可以再切換）；覆蓋層唔阻擋 */
+.lightbox-img { pointer-events: auto; }
 .lightbox-close {
   position: absolute; top: 22px; right: 26px;
   width: 44px; height: 44px; border: none; cursor: pointer;
@@ -1041,7 +1111,6 @@ html.lang-en .hero-title {
     <li><a href="#events" data-i18n="nav_events">活動</a></li>
     <li><a href="#gallery" data-i18n="nav_gallery">圖展</a></li>
     <li><a href="#founders" data-i18n="nav_founders">創辦人</a></li>
-    <li><a href="#members" data-i18n="nav_members">會員</a></li>
     <li><a href="#culture" data-i18n="nav_culture">文化</a></li>
   </ul>
   <div class="lang-switch">
@@ -1297,22 +1366,24 @@ html.lang-en .hero-title {
   </div>
 </section>
 
-<!-- ===== 活動推廣 ===== -->
+<!-- ===== 活動通告（宣傳單張圖片網格） ===== -->
+<!--
+  ※ 要加宣傳單張：只需將圖片放去 images/flyers/ 目錄，
+    再喺 announcements.json 嘅 announcements[] 加一項（cover = 檔名）就得。
+  ※ 數量唔設上限，加幾多張都自動顯示。
+  ※ 唔想用 JSON：都可以直接將 <img> 寫落下面 #flyersGrid 容器，照樣顯示。
+-->
 <section class="events-section" id="events">
   <div class="events-inner">
-    <div class="section-label" data-i18n="event_label">活 動 推 廣</div>
-    <h2 class="section-title" data-i18n="event_title">齊齊參與，感受龍舟魅力</h2>
+    <div class="section-label" data-i18n="event_label">活 動 通 告</div>
+    <h2 class="section-title" data-i18n="event_title">最新活動 · 宣傳單張</h2>
     <p class="section-intro" data-i18n="event_lead">山谷聯龍舟隊定期舉辦各類活動，無論你係新手定係老手，都可以搵到適合自己嘅參與方式。一齊落水，感受槳影破浪嘅快感！</p>
 
-    <div class="events-table" id="eventsTable" role="table" aria-label="活動列表">
-      <!-- 由 events.json 動態渲染，唔使改 index.html -->
+    <div class="flyers-grid" id="flyersGrid">
+      <!-- 由 announcements.json 動態渲染，唔使改 index.html -->
     </div>
-    <div class="events-manage-link">
-      <a href="https://my.feishu.cn/base/KtLFbkzaia7ifGsQERjc9j8Dnpd" target="_blank" rel="noopener">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        <span data-i18n="event_manage">喺飛書表格度管理活動</span>
-      </a>
-    </div>
+
+    <p class="flyers-hint" data-i18n="flyers_hint">※ 想加多張宣傳單張？將圖片放去 <code>images/flyers/</code> 目錄，再喺 <code>announcements.json</code> 加一項就得，數量唔設上限。</p>
   </div>
 </section>
 
@@ -1405,28 +1476,6 @@ html.lang-en .hero-title {
         </a>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ===== 會員列表 ===== -->
-<section class="members-section" id="members">
-  <div class="members-inner">
-    <div class="section-label" data-i18n="member_label">會 員 名 冊</div>
-    <h2 class="section-title"><span data-i18n="member_title_prefix">山谷聯龍舟隊會員</span> <span id="memberCount" style="color:var(--red);">0</span> <span data-i18n="member_title_suffix">人</span></h2>
-    <p class="section-intro" data-i18n="member_lead">一眾龍舟愛好者，同心協力，破浪前行。滑鼠懸停可暫停滾動。</p>
-  </div>
-  <div class="members-track-wrap">
-    <div class="members-track" id="membersTrack1"></div>
-  </div>
-  <div class="members-track-wrap">
-    <div class="members-track reverse" id="membersTrack2"></div>
-  </div>
-  <p class="members-hint" data-i18n="member_hint">※ 會員名單喺飛書表格度管理，加減會員後話我知，我幫你同步到網頁</p>
-  <div class="events-manage-link" style="margin-top:20px;">
-    <a href="https://my.feishu.cn/base/KtLFbkzaia7ifGsQERjc9j8Dnpd?table=tblR29yvvFP3URVW" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      <span data-i18n="member_manage">喺飛書表格度加減會員</span>
-    </a>
   </div>
 </section>
 
@@ -1614,35 +1663,141 @@ function switchLang(lang) {
   document.documentElement.classList.toggle('lang-en', lang === 'en');
   try { localStorage.setItem('lang', lang); } catch(e) {}
   if (typeof renderAlbums === 'function') renderAlbums();
-  if (typeof renderEvents === 'function') renderEvents();
+  if (typeof renderFlyers === 'function') renderFlyers();
 }
 
 /* ============================================================
-   會員名冊 — 跑馬燈數據（同步自飛書表格）
-   ※ 要增減會員，改下面 MEMBERS 陣列，或直接話我知
+   活動通告 · 宣傳單張 — 數據（同步自 announcements.json）
+   ※ 數量唔設上限：要加單張，改下面 ANNOUNCEMENTS 陣列，
+     或將 announcements.json 放喺同一目錄，會自動覆蓋呢份內嵌數據。
+   ※ cover = 圖片檔名，實際路徑 = images/flyers/{cover}
    ============================================================ */
-var MEMBERS = [
-  "Adam Wan", "James Tang", "B Leung", "萬隆", "阿傑", "阿強",
-  "阿明", "阿珍", "阿娟", "家豪", "志偉", "麗華", "建邦", "美琳",
-  "Daniel", "Tommy", "Rachel", "Kevin", "Sandy", "Eric", "阿波", "阿龍"
+var ANNOUNCEMENTS = [
+  {
+    id: "duanwu-2026",
+    title: { zh: "2026 梅窩端午龍舟賽", en: "2026 Mui Wo Dragon Boat Race" },
+    date: "2026-06-19（五）", time: "08:30 - 17:00",
+    location: { zh: "大嶼山梅窩銀礦灣海濱", en: "Silver Mine Bay, Mui Wo, Lantau" },
+    desc: { zh: "年度最盛大嘅端午競渡，設公開組、女子組、混合組及親子體驗組。賽後設龍舟飯及頒獎典禮，歡迎全港市民到場打氣。", en: "The biggest race of the year, with open, women's, mixed and family-fun categories. Dragon boat feast and awards ceremony after the race. All welcome." },
+    status: { zh: "即將舉行", en: "Coming Soon" },
+    register: "https://wa.me/85261956036",
+    cover: "flyer_duanwu.jpg"
+  },
+  {
+    id: "taster-day",
+    title: { zh: "龍舟體驗日（新手免費）", en: "Dragon Boat Taster Day (Free for Beginners)" },
+    date: "2026-05-10（日）", time: "09:00 - 12:00",
+    location: { zh: "梅窩海濱長廊集合", en: "Mui Wo Waterfront Promenade" },
+    desc: { zh: "從未扒過龍舟都得！由教練教授基本槳法，再落水實戰一圈。費用全免，名額 40 人，額滿即止。", en: "Never paddled before? No problem. Coaches teach the basics, then you hit the water. Free of charge, 40 spots only." },
+    status: { zh: "開放報名", en: "Open for Registration" },
+    register: "https://wa.me/85261833877",
+    cover: "flyer_taster.jpg"
+  },
+  {
+    id: "training-camp",
+    title: { zh: "賽前集訓營", en: "Pre-Race Training Camp" },
+    date: "2026-05-24 至 06-14（逢週末）", time: "每節 2.5 小時",
+    location: { zh: "梅窩龍舟會碼頭", en: "Dragon Boat Club Pier, Mui Wo" },
+    desc: { zh: "為端午正賽而設嘅 4 週集訓，由鼓手、槳法到起航配合逐一打磨。參加者需自備運動裝備，本會提供槳具。", en: "A 4-week camp ahead of the main race, polishing drumming, stroke and start coordination. Bring sports gear; paddles provided." },
+    status: { zh: "開放報名", en: "Open for Registration" },
+    register: "https://wa.me/85294773022",
+    cover: "flyer_camp.jpg"
+  },
+  {
+    id: "doting",
+    title: { zh: "龍舟點睛儀式", en: "Dragon Eye-Dotting Ceremony" },
+    date: "2026-06-18（四）", time: "10:00 - 11:30",
+    location: { zh: "梅窩天后廟前廣場", en: "Tin Hau Temple Plaza, Mui Wo" },
+    desc: { zh: "競渡前一日的傳統祭龍儀式，由長者為龍頭點睛開光，祈求風調雨順、出入平安。歡迎街坊一同參與。", en: "Traditional pre-race ritual: elders dot the eyes of the dragon head to bless the boat. Neighbours welcome to join." },
+    status: { zh: "即將舉行", en: "Coming Soon" },
+    register: "",
+    cover: "flyer_dianjing.jpg"
+  },
+  {
+    id: "fundraising",
+    title: { zh: "龍舟文化慈善夜跑", en: "Dragon Boat Culture Charity Night Run" },
+    date: "2026-07-12（日）", time: "19:00 - 21:30",
+    location: { zh: "大嶼山昂坪360 起點", en: "Ngong Ping 360 Start Point, Lantau" },
+    desc: { zh: "結合龍舟文化展覽嘅夜間慈善跑，報名費全數撥捐青年龍舟培訓計劃。設 3km 及 8km 兩個組別。", en: "A night charity run paired with a dragon boat culture exhibition. All entry fees go to the youth dragon boat training programme. 3km & 8km categories." },
+    status: { zh: "報名截止", en: "Registration Closed" },
+    register: "",
+    cover: "flyer_run.jpg"
+  },
+  {
+    id: "winter-camp",
+    title: { zh: "冬季陸上訓練班", en: "Winter Dry-Land Training" },
+    date: "2026-11-01 起（逢週三）", time: "19:30 - 21:00",
+    location: { zh: "梅窩體育館", en: "Mui Wo Sports Centre" },
+    desc: { zh: "休賽季期間嘅體能及技術維持課程，包括划槳機、核心訓練及戰術分析，為下屆賽季儲備實力。", en: "Off-season fitness and technique maintenance: ergo, core training and race tactics — building up for the next season." },
+    status: { zh: "已結束", en: "Ended" },
+    register: "",
+    cover: "flyer_winter.jpg"
+  }
 ];
 
-function renderMembers() {
-  var t1 = document.getElementById('membersTrack1');
-  var t2 = document.getElementById('membersTrack2');
-  var countEl = document.getElementById('memberCount');
-  if (!t1 || !t2) return;
+/* announcements.json 可選覆蓋：放喺同一目錄即可動態載入，
+   唔使 JSON 都得（ANNOUNCEMENTS 已有內嵌數據，永遠有效） */
+function loadAnnouncements(callback) {
+  fetch('announcements.json', { cache: 'no-cache' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var list = (data && data.announcements) ? data.announcements : (Array.isArray(data) ? data : null);
+      if (list && list.length) { ANNOUNCEMENTS = list; }
+    })
+    .catch(function() { /* 用內嵌數據 */ })
+    .finally(function() { if (callback) callback(); });
+}
 
-  // 複製一份拼成無縫循環（marquee 移動 -50% 時恰好銜接）
+/* 狀態標籤 class（同活動表格共用規則） */
+function flyerStatusClass(s) {
+  return 's-' + (s || '').replace(/[^一-龥a-zA-Z0-9]/g, '');
+}
+
+/* 渲染宣傳單張網格（數量唔設上限） */
+function renderFlyers() {
+  var grid = document.getElementById('flyersGrid');
+  if (!grid) return;
+  var lang = document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
+
+  if (!ANNOUNCEMENTS.length) {
+    grid.innerHTML = '<p class="album-desc" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-light)">暫無活動通告。</p>';
+    return;
+  }
+
   var html = '';
-  MEMBERS.forEach(function(name) {
-    html += '<div class="member-chip"><span class="member-dot"></span>' + name + '</div>';
-  });
-  var doubled = html + html;
-  t1.innerHTML = doubled;
-  t2.innerHTML = doubled;
+  ANNOUNCEMENTS.forEach(function(ev) {
+    var title = (ev.title && ev.title[lang]) || ev.title || '';
+    var desc  = (ev.desc && ev.desc[lang]) || ev.desc || '';
+    var loc   = (ev.location && ev.location[lang]) || ev.location || '';
+    var statusText = (ev.status && ev.status[lang]) || ev.status || '';
+    var imgSrc = 'images/flyers/' + (ev.cover || 'placeholder.jpg');
+    var alt = String(ev.cover || title).replace(/\.[^/.]+$/, "");
 
-  if (countEl) countEl.textContent = MEMBERS.length;
+    var regBtn = '';
+    if (ev.register && ev.register !== '') {
+      regBtn = '<a class="flyer-register" href="' + ev.register + '" target="_blank" rel="noopener">立即報名 →</a>';
+    } else {
+      regBtn = '<span class="flyer-register none">暫不開放報名</span>';
+    }
+
+    html += '<div class="flyer-card">';
+    // 點擊單張圖片 → 放大（用現有 Lightbox）
+    html +=   '<div class="flyer-thumb" onclick="window.__openFlyer && window.__openFlyer(\'' + imgSrc.replace(/'/g, "\\'") + '\', \'' + String(title).replace(/'/g, "\\'") + '\')">';
+    html +=     '<span class="flyer-status ' + flyerStatusClass(statusText) + '">' + statusText + '</span>';
+    html +=     '<span class="flyer-zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>';
+    html +=     '<img src="' + imgSrc + '" alt="' + alt + '" loading="lazy"'
+            + ' onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22800%22%3E%3Crect width=%22600%22 height=%22800%22 fill=%22%232a3444%22/%3E%3Ctext x=%22300%22 y=%22400%22 font-size=%2228%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(alt) + '%3C/text%3E%3C/svg%3E\';">';
+    html +=   '</div>';
+    html +=   '<div class="flyer-info">';
+    html +=     '<h3>' + title + '</h3>';
+    html +=     '<div class="flyer-meta"><span class="fm-date">' + (ev.date || '') + '</span><span class="fm-time">' + (ev.time || '') + '</span></div>';
+    html +=     '<div class="desc">' + desc + (loc ? '<span class="loc">' + loc + '</span>' : '') + '</div>';
+    html +=     regBtn;
+    html +=   '</div>';
+    html += '</div>';
+  });
+
+  grid.innerHTML = html;
 }
 
 
@@ -1702,15 +1857,23 @@ var lbIndex = 0;
 var lbList = [];
 
 function bindGalleryClick(root) {
-  // 收集呢個相簿區塊入面所有圖，建立可切換清單
-  var items = root.querySelectorAll('.gallery-item img');
-  items.forEach(function(img) {
-    img.addEventListener('click', function() {
-      // 每次點擊重新收集當前可見嘅所有圖（含同一相簿）
-      lbList = Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el) { return el; });
-      lbIndex = lbList.indexOf(img);
-      openLightbox(img.src, img.alt);
-    });
+  // ★ 用事件委派，綁去 .gallery-item（而唔係 img 本身）。
+  //   原因：.gallery-overlay 用 position:absolute; inset:0 覆蓋住成塊，
+  //   如果直接監聽 img，click 會俾 overlay 食咗，永遠觸發唔到 → 點擊放唔大。
+  //   委派到 item 後，無論點擊圖、overlay、定係將來加嘅元素，都一定行到。
+  if (!root || root.__galleryBound) return;
+  root.__galleryBound = true;
+  root.addEventListener('click', function(e) {
+    var item = e.target.closest && e.target.closest('.gallery-item');
+    if (!item) return;
+    // 如果點擊嘅係 lightbox 內部（理論上唔會喺 albumsRoot 入面），忽略
+    var img = item.querySelector('img');
+    if (!img) return;
+    // 每次重新收集晒所有可見圖，確保切語言後清單最新
+    lbList = Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el) { return el; });
+    lbIndex = lbList.indexOf(img);
+    if (lbIndex < 0) lbIndex = 0;
+    openLightbox(img.src, img.alt);
   });
 }
 
@@ -1718,12 +1881,34 @@ function openLightbox(src, alt) {
   var box = document.getElementById('lightbox');
   var lbImg = document.getElementById('lbImg');
   var lbCap = document.getElementById('lbCaption');
-  if (!box) return;
+  if (!box) { console.warn('[lightbox] #lightbox 搵唔到'); return; }
   lbImg.src = src;
   lbCap.textContent = alt || '';
   box.classList.add('open');
   box.setAttribute('aria-hidden', 'false');
 }
+
+// ★ 宣傳單張：點擊縮圖 → 用同一套 Lightbox 放大
+window.__openFlyer = function(src, alt) {
+  if (!src) return;
+  var root = document.getElementById('flyersGrid');
+  // 收集目前所有單張圖，俾 Lightbox 做上下張切換
+  lbList = root ? Array.prototype.map.call(root.querySelectorAll('.flyer-thumb img'), function(el) { return el; }) : [];
+  lbIndex = lbList.findIndex(function(img) { return img.src === src; });
+  if (lbIndex < 0) lbIndex = 0;
+  openLightbox(src, alt || '');
+};
+
+// ★ 全局函數：俾 inline onclick 直接 call —— 唔使再靠事後 bind，唔受 render 時機影響
+window.__openLb = function(img) {
+  if (!img) return;
+  // 每次重新收集晒所有相（切換語言後都最新）
+  var root = document.getElementById('albumsRoot');
+  lbList = root ? Array.prototype.map.call(root.querySelectorAll('.gallery-item img'), function(el){ return el; }) : [img];
+  lbIndex = lbList.indexOf(img);
+  if (lbIndex < 0) lbIndex = 0;
+  openLightbox(img.src, img.alt);
+};
 
 function closeLightbox() {
   var box = document.getElementById('lightbox');
@@ -1756,9 +1941,13 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('lbClose').addEventListener('click', closeLightbox);
   document.getElementById('lbPrev').addEventListener('click', function() { showLightboxOffset(-1); });
   document.getElementById('lbNext').addEventListener('click', function() { showLightboxOffset(1); });
-  // 點背景（唔係按鈕、唔係圖）就關閉
+  // 點背景 / 點大圖（唔係按鈕）嘅行為：
+  //   - 點大圖本體 → 下一張（想再放大／切換都好用）
+  //   - 點背景空白位 → 關閉
   box.addEventListener('click', function(e) {
-    if (e.target === box) closeLightbox();
+    var t = e.target;
+    if (t === box) { closeLightbox(); return; }
+    if (t && t.id === 'lbImg') { showLightboxOffset(1); return; }
   });
   // 鍵盤：Esc 關閉、← → 切換
   document.addEventListener('keydown', function(e) {
@@ -1804,8 +1993,10 @@ function renderAlbums() {
       var safeName = cleanName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       var src = 'images/' + folder + '/' + cleanName + '.jpg';
       html += '<div class="gallery-item">';
-      // onerror：萬一某張圖 404，顯示文字佔位，唔會留白
-      html += '<img src="' + src + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3C/svg%3E\';">';
+      // ★ 直接用 inline onclick —— 無論幾時 render、切唔切語言，click 都一定得
+      html += '<img src="' + src + '" alt="' + safeName + '" loading="lazy"'
+            + ' onclick="window.__openLb && window.__openLb(this)"'
+            + ' onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3C/svg%3E\';">';
       html += '<div class="gallery-overlay"><span>' + safeName + '</span></div>';
       html += '</div>';
     });
@@ -1817,66 +2008,6 @@ function renderAlbums() {
   bindGalleryClick(root);
 }
 
-/* ============================================================
-   活動列表 — 由 events.json 動態渲染（響應式：桌面=表格、手機=卡片）
-   ※ 想更新活動，改 events.json 就得，唔使改 index.html
-   ============================================================ */
-var EVENTS_CACHE = [];
-
-function statusClass(s) {
-  return 's-' + (s || '').replace(/[^一-龥a-zA-Z0-9]/g, '');
-}
-
-function renderEvents() {
-  var root = document.getElementById('eventsTable');
-  if (!root) return;
-  var lang = document.documentElement.classList.contains('lang-en') ? 'en' : 'zh';
-  var events = EVENTS_CACHE.length ? EVENTS_CACHE : (window.__EVENTS__ || []);
-
-  var head = '<div class="et-head" role="row">' +
-               '<div role="columnheader" data-i18n="ev_col_title">活動</div>' +
-               '<div role="columnheader" data-i18n="ev_col_date">日期</div>' +
-               '<div role="columnheader" data-i18n="ev_col_time">時間</div>' +
-               '<div role="columnheader" data-i18n="ev_col_desc">詳情</div>' +
-               '<div role="columnheader" data-i18n="ev_col_status">狀態</div>' +
-             '</div>';
-
-  var rows = events.map(function(ev) {
-    var title = (ev.title && ev.title[lang]) || ev.title;
-    var desc  = (ev.desc && ev.desc[lang]) || ev.desc;
-    var loc   = (ev.location && ev.location[lang]) || ev.location || '';
-    var detail = loc ? desc + '<br><small style="color:var(--water)">📍 ' + loc + '</small>' : desc;
-    var regBtn = (ev.register && ev.register !== '') ?
-      '<a class="et-register" href="' + ev.register + '" target="_blank" rel="noopener" data-i18n="ev_register">立即報名 →</a>' : '';
-    var statusText = (ev.status && ev.status[lang]) || ev.status || '';
-    return '<div class="et-row" role="row">' +
-             '<div class="et-title" role="cell">' + title + regBtn + '</div>' +
-             '<div class="et-date" role="cell">' + (ev.date || '') + '</div>' +
-             '<div class="et-time" role="cell">' + (ev.time || '') + '</div>' +
-             '<div class="et-desc" role="cell">' + detail + '</div>' +
-             '<div class="et-status ' + statusClass(statusText) + '" role="cell">' + statusText + '</div>' +
-           '</div>';
-  }).join('');
-
-  root.innerHTML = head + rows;
-}
-
-function loadEvents() {
-  var root = document.getElementById('eventsTable');
-  if (!root) return;
-  root.innerHTML = '<div style="padding:40px;text-align:center;color:var(--ink-light)">載入緊活動資料…</div>';
-  fetch('events.json', { cache: 'no-cache' })
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      EVENTS_CACHE = (data && data.events) ? data.events : (Array.isArray(data) ? data : []);
-      window.__EVENTS__ = EVENTS_CACHE;
-      renderEvents();
-    })
-    .catch(function() {
-      // 萬一 events.json 攞唔到，保持現有靜態內容（唔顯示錯誤）
-      root.innerHTML = '';
-    });
-}
 
 /* ============================================================
    初始化
@@ -1890,7 +2021,8 @@ document.addEventListener('DOMContentLoaded', function() {
   loadAlbums(function() {
     renderAlbums();
   });
-  loadEvents();
+  // 活動通告：先試 announcements.json（可選），再用內嵌 ANNOUNCEMENTS 渲染
+  loadAnnouncements(function() { renderFlyers(); });
 });
 </script>
 <!-- ===== Lightbox：點圖放大 ===== -->
