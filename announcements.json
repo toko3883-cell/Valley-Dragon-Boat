@@ -1,0 +1,70 @@
+{
+  "announcements": [
+    {
+      "id": "duanwu-2026",
+      "title": { "zh": "2026 梅窩端午龍舟賽", "en": "2026 Mui Wo Dragon Boat Race" },
+      "date": "2026-06-19（五）",
+      "time": "08:30 - 17:00",
+      "location": { "zh": "大嶼山梅窩銀礦灣海濱", "en": "Silver Mine Bay, Mui Wo, Lantau" },
+      "desc": { "zh": "年度最盛大嘅端午競渡，設公開組、女子組、混合組及親子體驗組。賽後設龍舟飯及頒獎典禮，歡迎全港市民到場打氣。", "en": "The biggest race of the year, with open, women's, mixed and family-fun categories. Dragon boat feast and awards ceremony after the race. All welcome." },
+      "status": { "zh": "即將舉行", "en": "Coming Soon" },
+      "register": "https://wa.me/85261956036",
+      "cover": "flyer_duanwu.jpg"
+    },
+    {
+      "id": "taster-day",
+      "title": { "zh": "龍舟體驗日（新手免費）", "en": "Dragon Boat Taster Day (Free for Beginners)" },
+      "date": "2026-05-10（日）",
+      "time": "09:00 - 12:00",
+      "location": { "zh": "梅窩海濱長廊集合", "en": "Mui Wo Waterfront Promenade" },
+      "desc": { "zh": "從未扒過龍舟都得！由教練教授基本槳法，再落水實戰一圈。費用全免，名額 40 人，額滿即止。", "en": "Never paddled before? No problem. Coaches teach the basics, then you hit the water. Free of charge, 40 spots only." },
+      "status": { "zh": "開放報名", "en": "Open for Registration" },
+      "register": "https://wa.me/85261833877",
+      "cover": "flyer_taster.jpg"
+    },
+    {
+      "id": "training-camp",
+      "title": { "zh": "賽前集訓營", "en": "Pre-Race Training Camp" },
+      "date": "2026-05-24 至 06-14（逢週末）",
+      "time": "每節 2.5 小時",
+      "location": { "zh": "梅窩龍舟會碼頭", "en": "Dragon Boat Club Pier, Mui Wo" },
+      "desc": { "zh": "為端午正賽而設嘅 4 週集訓，由鼓手、槳法到起航配合逐一打磨。參加者需自備運動裝備，本會提供槳具。", "en": "A 4-week camp ahead of the main race, polishing drumming, stroke and start coordination. Bring sports gear; paddles provided." },
+      "status": { "zh": "開放報名", "en": "Open for Registration" },
+      "register": "https://wa.me/85294773022",
+      "cover": "flyer_camp.jpg"
+    },
+    {
+      "id": "doting",
+      "title": { "zh": "龍舟點睛儀式", "en": "Dragon Eye-Dotting Ceremony" },
+      "date": "2026-06-18（四）",
+      "time": "10:00 - 11:30",
+      "location": { "zh": "梅窩天后廟前廣場", "en": "Tin Hau Temple Plaza, Mui Wo" },
+      "desc": { "zh": "競渡前一日的傳統祭龍儀式，由長者為龍頭點睛開光，祈求風調雨順、出入平安。歡迎街坊一同參與。", "en": "Traditional pre-race ritual: elders dot the eyes of the dragon head to bless the boat. Neighbours welcome to join." },
+      "status": { "zh": "即將舉行", "en": "Coming Soon" },
+      "register": "",
+      "cover": "flyer_dianjing.jpg"
+    },
+    {
+      "id": "fundraising",
+      "title": { "zh": "龍舟文化慈善夜跑", "en": "Dragon Boat Culture Charity Night Run" },
+      "date": "2026-07-12（日）",
+      "time": "19:00 - 21:30",
+      "location": { "zh": "大嶼山昂坪360 起點", "en": "Ngong Ping 360 Start Point, Lantau" },
+      "desc": { "zh": "結合龍舟文化展覽嘅夜間慈善跑，報名費全數撥捐青年龍舟培訓計劃。設 3km 及 8km 兩個組別。", "en": "A night charity run paired with a dragon boat culture exhibition. All entry fees go to the youth dragon boat training programme. 3km & 8km categories." },
+      "status": { "zh": "報名截止", "en": "Registration Closed" },
+      "register": "",
+      "cover": "flyer_run.jpg"
+    },
+    {
+      "id": "winter-camp",
+      "title": { "zh": "冬季陸上訓練班", "en": "Winter Dry-Land Training" },
+      "date": "2026-11-01 起（逢週三）",
+      "time": "19:30 - 21:00",
+      "location": { "zh": "梅窩體育館", "en": "Mui Wo Sports Centre" },
+      "desc": { "zh": "休賽季期間嘅體能及技術維持課程，包括划槳機、核心訓練及戰術分析，為下屆賽季儲備實力。", "en": "Off-season fitness and technique maintenance: ergo, core training and race tactics — building up for the next season." },
+      "status": { "zh": "已結束", "en": "Ended" },
+      "register": "",
+      "cover": "flyer_winter.jpg"
+    }
+  ]
+}
