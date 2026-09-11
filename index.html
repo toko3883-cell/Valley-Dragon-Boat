@@ -22,6 +22,79 @@ body {
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 
+/* ===== 背景音樂播放器 ===== */
+.bgm-toggle {
+  position: fixed;
+  bottom: 28px; left: 28px;
+  z-index: 200;
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 16px 10px 14px;
+  background: rgba(30,42,56,0.82);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(201,162,75,0.35);
+  border-radius: 40px;
+  color: var(--paper);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 1px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  transition: background .25s ease, border-color .25s ease, transform .25s ease;
+}
+.bgm-toggle:hover {
+  background: rgba(30,42,56,0.95);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+/* 播放/暫停圖標（預設顯示「播放」三角，播放中隱藏） */
+.bgm-toggle .bgm-play {
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; color: var(--gold-light);
+}
+/* 律動柱（預設收合，播放時展開動畫） */
+.bgm-toggle .bgm-bars {
+  display: none;
+  align-items: flex-end; justify-content: center;
+  gap: 3px; width: 22px; height: 22px;
+}
+.bgm-toggle .bgm-bars i {
+  width: 3px; height: 8px;
+  background: var(--gold-light);
+  border-radius: 2px;
+  animation: bgmBar 0.9s ease-in-out infinite;
+}
+.bgm-toggle .bgm-bars i:nth-child(2) { animation-delay: 0.15s; height: 14px; }
+.bgm-toggle .bgm-bars i:nth-child(3) { animation-delay: 0.3s;  height: 10px; }
+.bgm-toggle .bgm-bars i:nth-child(4) { animation-delay: 0.45s; height: 12px; }
+@keyframes bgmBar {
+  0%,100% { transform: scaleY(0.45); }
+  50%     { transform: scaleY(1.15); }
+}
+/* ★ 播放中狀態：隱藏三角、顯示律動柱 */
+.bgm-toggle.is-playing .bgm-play { display: none; }
+.bgm-toggle.is-playing .bgm-bars  { display: flex; }
+.bgm-toggle.is-playing {
+  border-color: var(--gold);
+  background: rgba(30,42,56,0.95);
+}
+/* 初次提示小圓點（未播放時閃爍，提示用戶可點） */
+.bgm-toggle:not(.is-playing)::after {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--gold-light);
+  animation: bgmDot 1.6s ease-in-out infinite;
+}
+.bgm-toggle.is-playing::after { display: none; }
+@keyframes bgmDot {
+  0%,100% { opacity: 0.3; transform: scale(0.8); }
+  50%     { opacity: 1;   transform: scale(1.2); }
+}
+@media (max-width: 600px) {
+  .bgm-toggle { bottom: 18px; left: 18px; padding: 9px 12px; }
+  .bgm-toggle .bgm-label { display: none; }  /* 手機只留圖標，省位 */
+}
+
 /* ===== 色板變數 ===== */
 :root {
   --red: #B8232F;
@@ -1812,6 +1885,7 @@ var I18N = {
   footer_slogan: { zh: "傳承龍舟文化 · 推廣龍舟運動 · 凝聚社區力量", en: "Heritage · Promotion · Community" },
   footer_photo: { zh: "大會指定攝影師：萬隆（Man Lung）", en: "Official Photographer: Man Lung (萬隆)" },
   footer_copy: { zh: "© 2026 山谷聯龍舟隊 版權所有", en: "© 2026 Shan Guk Luen Dragon Boat Team. All rights reserved." },
+  bgm_label: { zh: "音樂", en: "Music" },
   read_label: { zh: "已有多少人認識山谷聯", en: "People Who Discovered Us" },
   read_unit: { zh: "人閱讀", en: "views" },
   read_sub: { zh: "每次瀏覽 +1 · 數字儲存於本機瀏覽器", en: "Increments per visit · Stored locally in your browser" }
@@ -2173,6 +2247,50 @@ document.addEventListener('DOMContentLoaded', function() {
       if (n >= steps) { clearInterval(tick); el.textContent = cur.toLocaleString('zh-HK'); }
     }, 1000 / fps);
   }
+
+  // ===== 背景音樂播放器 =====
+  var audio = document.getElementById('bgmAudio');
+  var btn   = document.getElementById('bgmToggle');
+  if (audio && btn) {
+    var STORAGE_KEY = 'sgl_bgm_on';
+    var savedOn = localStorage.getItem(STORAGE_KEY) === '1';
+
+    function setPlaying(on) {
+      btn.classList.toggle('is-playing', on);
+      try { localStorage.setItem(STORAGE_KEY, on ? '1' : '0'); } catch(e) {}
+    }
+
+    function tryPlay() {
+      var p = audio.play();
+      if (p && typeof p.then === 'function') {
+        p.then(function () { setPlaying(true); })
+         .catch(function () { setPlaying(false); });
+      }
+    }
+
+    // 點擊按鈕：切換播放 / 暫停
+    btn.addEventListener('click', function () {
+      if (audio.paused) { tryPlay(); }
+      else { audio.pause(); setPlaying(false); }
+    });
+
+    // 首次用戶互動後自動開始播放（符合瀏覽器 autoplay 政策：必須有手勢）
+    var started = false;
+    function onFirstInteract() {
+      if (started) return;
+      started = true;
+      var stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === '1' || stored === null) { tryPlay(); }
+      window.removeEventListener('click', onFirstInteract);
+      window.removeEventListener('scroll', onFirstInteract);
+      window.removeEventListener('keydown', onFirstInteract);
+    }
+    window.addEventListener('click', onFirstInteract);
+    window.addEventListener('scroll', onFirstInteract);
+    window.addEventListener('keydown', onFirstInteract);
+
+    audio.addEventListener('ended', function () { setPlaying(false); });
+  }
 });
 </script>
 <!-- ===== Lightbox：點圖放大 ===== -->
@@ -2183,6 +2301,18 @@ document.addEventListener('DOMContentLoaded', function() {
   <button class="lightbox-nav lightbox-next" id="lbNext" aria-label="下一張">›</button>
   <div class="lightbox-caption" id="lbCaption"></div>
 </div>
+
+<!-- ===== 背景音樂播放器 ===== -->
+<audio id="bgmAudio" src="bgm.mp3" loop preload="metadata"></audio>
+<button id="bgmToggle" class="bgm-toggle" aria-label="背景音樂 播放/暫停" title="背景音樂">
+  <span class="bgm-bars" aria-hidden="true">
+    <i></i><i></i><i></i><i></i>
+  </span>
+  <span class="bgm-icon bgm-play" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+  </span>
+  <span class="bgm-label" data-i18n="bgm_label">音樂</span>
+</button>
 
 </body>
 </html>
