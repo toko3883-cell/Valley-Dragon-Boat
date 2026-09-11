@@ -943,6 +943,58 @@ html.lang-en .hero-title {
 }
 .footer p { line-height: 1.8; }
 
+/* ===== 底部橫幅（圖 + 淺色文字） ===== */
+.footer-banner {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+  /* 圖載入失敗時嘅深色 fallback，配合淺色文字 */
+  background: #2a3444;
+}
+.footer-banner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block;
+  filter: brightness(0.55) saturate(1.1);
+}
+/* 底部漸變：令文字區域更易讀，淺色字更突出 */
+.footer-banner::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(20,29,40,0) 0%, rgba(20,29,40,0.35) 55%, rgba(20,29,40,0.75) 100%);
+  pointer-events: none;
+}
+.footer-banner-content {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 2;
+  text-align: center;
+  padding: 0 24px 40px;
+}
+.footer-banner-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(30px, 5vw, 48px);
+  font-weight: 900;
+  color: #F5F0E8;          /* ★ 淺色（米白），放喺圖底部 */
+  letter-spacing: 10px;
+  text-indent: 10px;
+  line-height: 1.2;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.55);
+  margin-bottom: 14px;
+}
+.footer-banner-sub {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 15px;
+  letter-spacing: 6px;
+  text-indent: 6px;
+  color: var(--gold-light);   /* 淺金色副標 */
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
+}
+@media (max-width: 600px) {
+  .footer-banner { height: 220px; }
+  .footer-banner-content { padding-bottom: 28px; }
+}
+
 /* ===== 響應式 ===== */
 @media (max-width: 900px) {
   .nav { padding: 14px 20px; }
@@ -1479,6 +1531,15 @@ html.lang-en .hero-title {
   </div>
 </section>
 
+<!-- ===== 底部橫幅：圖 + 淺色文字（山谷聯龍舟人） ===== -->
+<section class="footer-banner" aria-label="山谷聯龍舟人">
+  <img src="images/photob2.jpg" alt="山谷聯龍舟人" onerror="this.onerror=null;this.style.display='none';">
+  <div class="footer-banner-content">
+    <div class="footer-banner-title" data-i18n="banner_title">山谷聯龍舟人</div>
+    <div class="footer-banner-sub" data-i18n="banner_sub">傳承文化 · 推廣運動 · 凝聚社區 · 弘揚精神</div>
+  </div>
+</section>
+
 <!-- ===== 頁尾 ===== -->
 <footer class="footer">
   <div class="footer-brand" data-i18n="footer_brand">山谷聯龍舟人</div>
@@ -1644,6 +1705,8 @@ var I18N = {
   member_manage: { zh: "喺飛書表格度加減會員", en: "Add or remove members in Feishu" },
 
   footer_brand: { zh: "山谷聯龍舟人", en: "Shan Guk Luen Dragon Boat" },
+  banner_title: { zh: "山谷聯龍舟人", en: "Shan Guk Luen Dragon Boat" },
+  banner_sub: { zh: "傳承文化 · 推廣運動 · 凝聚社區 · 弘揚精神", en: "Heritage · Sport · Community · Spirit" },
   footer_slogan: { zh: "傳承龍舟文化 · 推廣龍舟運動 · 凝聚社區力量", en: "Heritage · Promotion · Community" },
   footer_photo: { zh: "大會指定攝影師：萬隆（Man Lung）", en: "Official Photographer: Man Lung (萬隆)" },
   footer_copy: { zh: "© 2026 山谷聯龍舟隊 版權所有", en: "© 2026 Shan Guk Luen Dragon Boat Team. All rights reserved." }
