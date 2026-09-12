@@ -2035,12 +2035,64 @@ var ALBUMS = [
       "photo11.jpg","photo12.jpg","photo13.jpg","photo14.jpg","photo15.jpg",
       "photo16.jpg","photo17.jpg","photo18.jpg","photo19.jpg","photo20.jpg",
       "photo21.jpg","photo22.jpg","photo23.jpg","photo24.jpg","photo25.jpg",
-      "photo26.jpg","photo27.jpg","photo28.jpg","photo29.jpg","photo30.jpg",
-      "photo31.jpg","photo32.jpg","photo33.jpg","photo34.jpg","photo35.jpg",
-      "photo36.jpg","photo37.jpg","photo38.jpg","photo39.jpg","photo40.jpg",
-      "photo41.jpg","photo42.jpg","photo43.jpg","photo44.jpg","photo45.jpg",
-      "photo46.jpg","photo47.jpg","photo48.jpg","photo49.jpg","photo50.jpg",
-      "photo51.jpg","photo52.jpg","photo53.jpg","photo54.jpg"
+      "photo26.jpg","photo27.jpg","photo28.jpg","photo29.jpg","photo30.jpg"
+    ]
+  },
+  {
+    folder: "gallery",
+    title: { zh: "活動照片", en: "Event Photos" },
+    desc: { zh: "精選自歷次活動的珍貴瞬間，記錄每一次槳影破浪、同心協力的熱血畫面。", en: "Selected moments from past events — every frame of teamwork and passion." },
+    files: [
+      "photosgl01.jpg",
+      "photosgl02.jpg",
+      "photosgl03.jpg",
+      "photosgl04.jpg",
+      "photosgl05.jpg",
+      "photosgl06.jpg",
+      "photosgl07.jpg",
+      "photosgl08.jpg",
+      "photosgl09.jpg",
+      "photosgl10.jpg",
+      "photosgl11.jpg",
+      "photosgl12.jpg",
+      "photosgl13.jpg",
+      "photosgl14.jpg",
+      "photosgl15.jpg",
+      "photosgl16.jpg",
+      "photosgl17.jpg",
+      "photosgl18.jpg",
+      "photosgl19.jpg",
+      "photosgl20.jpg",
+      "photosgl21.jpg",
+      "photosgl22.jpg",
+      "photosgl23.jpg",
+      "photosgl24.jpg",
+      "photosgl25.jpg",
+      "photosgl26.jpg",
+      "photosgl27.jpg",
+      "photosgl28.jpg",
+      "photosgl29.jpg",
+      "photosgl30.jpg",
+      "photosgl31.jpg",
+      "photosgl32.jpg",
+      "photosgl33.jpg",
+      "photosgl34.jpg",
+      "photosgl35.jpg",
+      "photosgl36.jpg",
+      "photosgl37.jpg",
+      "photosgl38.jpg",
+      "photosgl39.jpg",
+      "photosgl40.jpg",
+      "photosgl41.jpg",
+      "photosgl42.jpg",
+      "photosgl43.jpg",
+      "photosgl44.jpg",
+      "photosgl45.jpg",
+      "photosgl46.jpg",
+      "photosgl47.jpg",
+      "photosgl48.jpg",
+      "photosgl49.jpg",
+      "photosgl50.jpg"
     ]
   }
 ];
@@ -2185,6 +2237,12 @@ function renderAlbums() {
   var html = '';
   ALBUMS.forEach(function(album) {
     html += '<div class="album">';
+    // ★ 有 title 嘅相簿（如「活動照片」）顯示分隔標題，冇 title 就唔顯示（原有邏輯不變）
+    var t = (album.title && album.title[lang]) || '';
+    if (t) {
+      var d = (album.desc && album.desc[lang]) || '';
+      html += '<div class="album-head"><h3>' + t + '</h3>' + (d ? '<p class="album-desc">' + d + '</p>' : '') + '</div>';
+    }
     html += '<div class="gallery-grid">';
     // folder：呢個相簿對應 images/ 下嘅邊個資料夾（內嵌數據必有；photos.json 覆蓋時都會補返）
     var folder = album.folder || '';
