@@ -796,19 +796,6 @@ html.lang-en .hero-title {
   .flyers-grid { grid-template-columns: 1fr; gap: 24px; }
   .flyer-thumb { aspect-ratio: 4 / 3; }
 }
-.flyers-hint {
-  margin-top: 40px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--ink-light);
-  opacity: 0.75;
-}
-.flyers-hint code {
-  background: var(--paper-dark);
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-}
 
 /* 手機/平板：表格變卡片 */
 @media (max-width: 900px) {
@@ -1604,7 +1591,6 @@ html.lang-en .hero-title {
       <!-- 由 announcements.json 動態渲染，唔使改 index.html -->
     </div>
 
-    <p class="flyers-hint" data-i18n="flyers_hint">※ 想加多張宣傳單張？將圖片放去 <code>images/flyers/</code> 目錄，再喺 <code>announcements.json</code> 加一項就得，數量唔設上限。</p>
   </div>
 </section>
 
@@ -1925,16 +1911,6 @@ var ANNOUNCEMENTS = [
     register: "https://wa.me/85261833877",
     cover: "flyer_taster.jpg"
   },
-  {
-    id: "xiaolong-open",
-    title: { zh: "2026梅窩小龍公開賽", en: "2026 Mui Wo Small Dragon Open" },
-    date: "2026-11-01（日）", time: "08:00 - 16:30",
-    location: { zh: "梅窩銀礦灣沙灘", en: "Silver Mine Bay Beach, Mui Wo" },
-    desc: { zh: "年度最盛大嘅端午競渡，設公開組、男子組、女子組、男女混合組。賽後設龍頒獎典禮，歡迎全港市民到場打氣。", en: "The biggest race of the year, with open, men's, women's and mixed categories. Awards ceremony after the race. All Hong Kong citizens welcome to cheer." },
-    status: { zh: "即將舉行", en: "Coming Soon" },
-    register: "https://wa.me/85261956036",
-    cover: "flyer_xiaolong.jpg"
-  }
 ];
 
 /* announcements.json 可選覆蓋：放喺同一目錄即可動態載入，
