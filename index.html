@@ -2003,28 +2003,38 @@ function renderFlyers() {
 
 /* ★ 圖展圖片候選名自動探測 —— 解決命名不一致（大小寫 / 底線）導致的 404 */
 function buildCandidates(folder, cleanName) {
-  // cleanName 已是純檔名（無副檔名），例如 photos_lg01、photo_lg1、photoslg01
+  // cleanName 已是純檔名（無副檔名），例如 photos_lg01、photo_lg1、event01
   var base = cleanName;
   // 「詞幹 + 數字」拆分：photos_lg | 01  ->  stem=photos_lg, num=01
   var m = base.match(/^(.*?)(\d+)$/);
   var stem = m ? m[1] : base;   // 數字前面嗰部分（stem）
   var num  = m ? m[2] : '';     // 編號（保留前導零）
   var variants = [base];
-  // lg 系列：stem 結尾嘅 large 縮寫，各種底線寫法互相轉換
-  //   photos_lg01 <-> photoslg01 <-> photos01
+  // ★ 判斷係咪「lg / large」縮寫系列：photos_lg01、photoslg01 等
+  //   只有呢類先做底線變體轉換；event01、photo01 等普通檔名唔受污染
+  var isLgSeries = /_lg$/i.test(stem) || /lg$/i.test(stem) || /_large$/i.test(stem);
   var stems = [stem];
-  if (/_lg$/i.test(stem)) {          // photos_lg  -> photos / photoslg
-    stems.push(stem.replace(/_lg$/i, ''));
-    stems.push(stem.replace(/_lg$/i, 'lg'));
-  } else if (/lg$/i.test(stem)) {    // photoslg -> photos_lg / photos
-    stems.push(stem.replace(/lg$/i, '_lg'));
-    stems.push(stem.replace(/lg$/i, ''));
-  } else if (/_large$/i.test(stem)) {
-    stems.push(stem.replace(/_large$/i, '_lg'));
-    stems.push(stem.replace(/_large$/i, ''));
-  } else {                            // 無 lg：photo1 -> photo_lg1 / photolg1
-    stems.push(stem + '_lg');
-    stems.push(stem + 'lg');
+  if (isLgSeries) {
+    // lg 系列：stem 結尾嘅 large 縮寫，各種底線寫法互相轉換
+    //   photos_lg01 <-> photoslg01 <-> photos01
+    if (/_lg$/i.test(stem)) {        // photos_lg  -> photos / photoslg
+      stems.push(stem.replace(/_lg$/i, ''));
+      stems.push(stem.replace(/_lg$/i, 'lg'));
+    } else if (/lg$/i.test(stem)) {  // photoslg -> photos_lg / photos
+      stems.push(stem.replace(/lg$/i, '_lg'));
+      stems.push(stem.replace(/lg$/i, ''));
+    } else if (/_large$/i.test(stem)) {
+      stems.push(stem.replace(/_large$/i, '_lg'));
+      stems.push(stem.replace(/_large$/i, ''));
+    }
+  } else {
+    // ★ 非 lg 系列（event01、photo01 等）：以 folder 名做詞幹兜底
+    //   檔名寫 event01，但磁碟實際係 event_01 / event-01 時，自動探測
+    if (folder) {
+      // 直接拼成完整檔名（已含編號），下面嘅 stem+num 循環唔會再追加 num
+      variants.push(folder + '_' + num);   // event_01
+      variants.push(folder + '-' + num);   // event-01
+    }
   }
   // 用各 stem + 同編號組合，生成候選名（去重）
   for (var si=0; si<stems.length; si++) {
@@ -2132,6 +2142,19 @@ var ALBUMS = [
       "photos_lg48.jpg",
       "photos_lg49.jpg",
       "photos_lg50.jpg"
+    ]
+  },
+  {
+    // ★ 活動照片專用相簿：檔案放喺 images/event/ 下
+    //   命名建議：event01.jpg, event02.jpg ...（數字遞增即可，命名不一致有自動探測兜底）
+    folder: "event",
+    title: { zh: "活動照片", en: "Event Gallery" },
+    desc: { zh: "將活動相片放入 images/event/ 資料夾，檔名寫入下面 files 陣列即可自動顯示。", en: "Drop your event photos into images/event/ and list the filenames below." },
+    files: [
+      "event01.jpg","event02.jpg","event03.jpg","event04.jpg","event05.jpg",
+      "event06.jpg","event07.jpg","event08.jpg","event09.jpg","event10.jpg",
+      "event11.jpg","event12.jpg","event13.jpg","event14.jpg","event15.jpg",
+      "event16.jpg","event17.jpg","event18.jpg","event19.jpg","event20.jpg"
     ]
   }
 ];
