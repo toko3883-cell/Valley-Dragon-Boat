@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -2061,7 +2060,12 @@ function onGalleryImgError(img) {
     img.src = list[tried];      // 試下一個候選名
     return;
   }
-  // 全部失敗 -> 顯示醒目佔位（橙色虛線框 + 檔名 + 完整路徑）
+  // 全部失敗：autoScan 相簿 -> 隱藏成塊（掃描空洞，唔算錯誤）；否則顯示橙色佔位
+  var item = img.closest && img.closest('.gallery-item');
+  if (item && item.hasAttribute('data-auto-scan')) {
+    item.style.display = 'none';
+    return;
+  }
   img.onerror = null;
   var safeName = img.alt || '';
   var src = list[0] || img.src;
@@ -2089,23 +2093,13 @@ var ALBUMS = [
     ]
   },
   {
-    // ★ 活動照片專用相簿：檔案放喺 images/event/ 下
-    //   命名建議：event01.jpg, event02.jpg ...（數字遞增即可，命名不一致有自動探測兜底）
     folder: "event",
     title: { zh: "活動照片", en: "Event Gallery" },
-    desc: { zh: "活動照片。", en: "Event Gallery." },
-    files: [
-      "event01.jpg","event02.jpg","event03.jpg","event04.jpg","event05.jpg",
-      "event06.jpg","event07.jpg","event08.jpg","event09.jpg","event10.jpg",
-      "event11.jpg","event12.jpg","event13.jpg","event14.jpg","event15.jpg",
-      "event16.jpg","event17.jpg","event18.jpg","event19.jpg","event20.jpg"
-       "event21.jpg","event22.jpg","event23.jpg","event24.jpg","event25.jpg",
-      "event26.jpg","event27.jpg","event28.jpg","event29.jpg","event30.jpg",
-      "event31.jpg","event32.jpg","event33.jpg","event34.jpg","event35.jpg",
-      "event36.jpg","event37.jpg","event38.jpg","event39.jpg","event40.jpg"
-       "event41.jpg","event42.jpg","event43.jpg","event44.jpg","event45.jpg"
-       "event46.jpg","event47.jpg","event48.jpg","event49.jpg","event50.jpg"
-    ]
+    desc: { zh: "", en: "" },
+    files: [],
+    autoScan: true,      // ★ 唔使填 files：自動探測 event01~event99，丟相入 images/event/ 即自動顯示
+    scanStem: "event",   //   詞幹（對應 folder 名）
+    scanLimit: 99        //   最多探測到 event99（可視需要調大）
   }
 ];
 
@@ -2259,13 +2253,26 @@ function renderAlbums() {
     html += '<div class="gallery-grid">';
     // folder：呢個相簿對應 images/ 下嘅邊個資料夾（內嵌數據必有；photos.json 覆蓋時都會補返）
     var folder = album.folder || '';
-    album.files.forEach(function(file) {
+    // ★ autoScan：files 留空時，自動探測 event01~event99（可自訂上限）
+    //   → 將活動相片丟入 images/event/ 即可自動顯示，唔使再維護 files 陣列
+    var files = album.files && album.files.length ? album.files.slice() : [];
+    if (files.length === 0 && album.autoScan) {
+      var stem = album.scanStem || folder;   // 預設用 folder 名做詞幹（event）
+      var limit = album.scanLimit || 99;
+      var pad = album.scanPad != null ? album.scanPad : 2;  // 預設 2 位：event01, event02 ...
+      for (var ni = 1; ni <= limit; ni++) {
+        var num = String(ni);
+        while (num.length < pad) num = '0' + num;  // 補前導零
+        files.push(stem + num);                    // event01, event02 ...（buildCandidates 再處理 event_01/event-01 等變體）
+      }
+    }
+    files.forEach(function(file) {
       // file 只係檔名（如 lsgl1.jpg），統一拼成 images/{folder}/{file}
       var name = String(file).replace(/\.[^/.]+$/, "");
       var cleanName = name.replace(/^.*\//, ""); // 純檔名，用嚟做 alt / 佔位文字（唔再顯示 lsgl/lsgl1）
       var safeName = cleanName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       var src = 'images/' + folder + '/' + cleanName + '.jpg';
-      html += '<div class="gallery-item">';
+      html += '<div class="gallery-item"' + (album.autoScan ? ' data-auto-scan="1"' : '') + '>';
       // ★ 直接用 inline onclick —— 無論幾時 render、切唔切語言，click 都一定得
       // ★ onerror 佔位：檔案唔存在時顯示醒目提示（橙色底 + 檔名 + 完整路徑），
       //   方便一眼睇出邊啲相未擺落 images/gallery/。放咗正確檔案就會自動正常顯示。
