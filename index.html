@@ -2230,9 +2230,18 @@ function renderAlbums() {
       var src = 'images/' + folder + '/' + cleanName + '.jpg';
       html += '<div class="gallery-item">';
       // ★ 直接用 inline onclick —— 無論幾時 render、切唔切語言，click 都一定得
+      // ★ onerror 佔位：檔案唔存在時顯示醒目提示（橙色底 + 檔名 + 完整路徑），
+      //   方便一眼睇出邊啲相未擺落 images/gallery/。放咗正確檔案就會自動正常顯示。
+      var placeholder = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E'
+                      + '%3Crect width=%22800%22 height=%22600%22 fill=%22%23F5E9D2%22/%3E'
+                      + '%3Crect x=%2220%22 y=%2220%22 width=%22760%22 height=%22560%22 rx=%2212%22 fill=%22none%22 stroke=%22%23C9A24B%22 stroke-width=%224%22 stroke-dasharray=%2216%208%22/%3E'
+                      + '%3Ctext x=%22400%22 y=%22260%22 font-size=%2228%22 fill=%22%23B8232F%22 font-family=%22sans-serif%22 font-weight=%22700%22 text-anchor=%22middle%22%3E%E2%9A%A0 %E6%AA%94%E6%A1%88%E6%9C%AA%E6%89%BE%E5%88%B0%3C/text%3E%3E'
+                      + '%3Ctext x=%22400%22 y=%22320%22 font-size=%2234%22 fill=%22%231E2A38%22 font-family=%22sans-serif%22 font-weight=%22700%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3E'
+                      + '%3Ctext x=%22400%22 y=%22380%22 font-size=%2220%22 fill=%22%233A4A5C%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(src) + '%3C/text%3E%3E'
+                      + '%3C/svg%3E';
       html += '<img src="' + src + '" alt="' + safeName + '" loading="lazy"'
             + ' onclick="window.__openLb && window.__openLb(this)"'
-            + ' onerror="this.onerror=null;this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E%3Crect width=%22800%22 height=%22600%22 fill=%22%232a3444%22/%3E%3Ctext x=%22400%22 y=%22300%22 font-size=%2232%22 fill=%22%2390a0b0%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3C/svg%3E\';">';
+            + ' onerror="this.onerror=null;this.src=\'' + placeholder + '\';">';
       html += '<div class="gallery-overlay"><span>' + safeName + '</span></div>';
       html += '</div>';
     });
