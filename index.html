@@ -2000,109 +2000,78 @@ function renderFlyers() {
 //   ※ 日後要增減相片，修改下面 ALBUMS 就得；
 //     photos.json 會自動同步輸出，方便你本地 / 其他工具讀取。
 // ============================================================
-
-/* ★ 圖展圖片候選名自動探測 —— 解決命名不一致（大小寫 / 底線）導致的 404 */
-function buildCandidates(folder, cleanName) {
-  // cleanName 已是純檔名（無副檔名），例如 photos_lg01、photo_lg1、event01
-  var base = cleanName;
-  // 「詞幹 + 數字」拆分：photos_lg | 01  ->  stem=photos_lg, num=01
-  var m = base.match(/^(.*?)(\d+)$/);
-  var stem = m ? m[1] : base;   // 數字前面嗰部分（stem）
-  var num  = m ? m[2] : '';     // 編號（保留前導零）
-  var variants = [base];
-  // ★ 判斷係咪「lg / large」縮寫系列：photos_lg01、photoslg01 等
-  //   只有呢類先做底線變體轉換；event01、photo01 等普通檔名唔受污染
-  var isLgSeries = /_lg$/i.test(stem) || /lg$/i.test(stem) || /_large$/i.test(stem);
-  var stems = [stem];
-  if (isLgSeries) {
-    // lg 系列：stem 結尾嘅 large 縮寫，各種底線寫法互相轉換
-    //   photos_lg01 <-> photoslg01 <-> photos01
-    if (/_lg$/i.test(stem)) {        // photos_lg  -> photos / photoslg
-      stems.push(stem.replace(/_lg$/i, ''));
-      stems.push(stem.replace(/_lg$/i, 'lg'));
-    } else if (/lg$/i.test(stem)) {  // photoslg -> photos_lg / photos
-      stems.push(stem.replace(/lg$/i, '_lg'));
-      stems.push(stem.replace(/lg$/i, ''));
-    } else if (/_large$/i.test(stem)) {
-      stems.push(stem.replace(/_large$/i, '_lg'));
-      stems.push(stem.replace(/_large$/i, ''));
-    }
-  } else {
-    // ★ 非 lg 系列（event01、photo01 等）：以 folder 名做詞幹兜底
-    //   檔名寫 event01，但磁碟實際係 event_01 / event-01 時，自動探測
-    if (folder) {
-      // 直接拼成完整檔名（已含編號），下面嘅 stem+num 循環唔會再追加 num
-      variants.push(folder + '_' + num);   // event_01
-      variants.push(folder + '-' + num);   // event-01
-    }
-  }
-  // 用各 stem + 同編號組合，生成候選名（去重）
-  for (var si=0; si<stems.length; si++) {
-    var v = stems[si] + num;
-    if (v && variants.indexOf(v) < 0) variants.push(v);
-  }
-  // 去重
-  var seen = {}; var uniq = [];
-  for (var i=0;i<variants.length;i++){ var vi=variants[i]; if(vi&&!seen[vi]){seen[vi]=1;uniq.push(vi);} }
-  // 拼成完整 URL，逐個試
-  var out = [];
-  for (var j=0;j<uniq.length;j++){ out.push('images/' + folder + '/' + uniq[j] + '.jpg'); }
-  return out;
-}
-function onGalleryImgError(img) {
-  var tried = img.__tried || 0;
-  var list = [];
-  try { list = JSON.parse((img.getAttribute('data-candidates')||'').replace(/&#39;/g,"'")); } catch(e){}
-  if (!list.length) { list = [img.src]; }
-  tried++;
-  if (tried < list.length) {
-    img.__tried = tried;
-    img.src = list[tried];      // 試下一個候選名
-    return;
-  }
-  // 全部失敗：autoScan 相簿 -> 隱藏成塊（掃描空洞，唔算錯誤）；否則顯示橙色佔位
-  var item = img.closest && img.closest('.gallery-item');
-  if (item && item.hasAttribute('data-auto-scan')) {
-    item.style.display = 'none';
-    return;
-  }
-  img.onerror = null;
-  var safeName = img.alt || '';
-  var src = list[0] || img.src;
-  img.src = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22600%22%3E'
-    + '%3Crect width=%22800%22 height=%22600%22 fill=%22%23F5E9D2%22/%3E'
-    + '%3Crect x=%2220%22 y=%2220%22 width=%22760%22 height=%22560%22 rx=%2212%22 fill=%22none%22 stroke=%22%23C9A24B%22 stroke-width=%224%22 stroke-dasharray=%2216%208%22/%3E'
-    + '%3Ctext x=%22400%22 y=%22260%22 font-size=%2228%22 fill=%22%23B8232F%22 font-family=%22sans-serif%22 font-weight=%22700%22 text-anchor=%22middle%22%3E%E2%9A%A0 %E6%AA%94%E6%A1%88%E6%9C%AA%E6%89%BE%E5%88%B0%3C/text%3E%3E'
-    + '%3Ctext x=%22400%22 y=%22320%22 font-size=%2234%22 fill=%22%231E2A38%22 font-family=%22sans-serif%22 font-weight=%22700%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3E'
-    + '%3Ctext x=%22400%22 y=%22380%22 font-size=%2220%22 fill=%22%233A4A5C%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(src) + '%3C/text%3E%3E'
-    + '%3C/svg%3E';
-}
-
 var ALBUMS = [
   {
     folder: "gallery",
     title: { zh: "", en: "" },
     desc: { zh: "", en: "" },
     files: [
-      "photo_lg1.jpg","photo_lg2.jpg","photo_lg3.jpg","photo_lg4.jpg","photo_lg5.jpg",
-      "photo_lg6.jpg","photo_lg7.jpg","photo_lg8.jpg","photo_lg9.jpg","photo_lg10.jpg",
-      "photo_lg11.jpg","photo_lg12.jpg","photo_lg13.jpg","photo_lg14.jpg","photo_lg15.jpg",
-      "photo_lg16.jpg","photo_lg17.jpg","photo_lg18.jpg","photo_lg19.jpg","photo_lg20.jpg",
-      "photo_lg21.jpg","photo_lg22.jpg","photo_lg23.jpg","photo_lg24.jpg","photo_lg25.jpg",
-      "photo_lg26.jpg","photo_lg27.jpg","photo_lg28.jpg","photo_lg29.jpg","photo_lg30.jpg"
+      "photo1.jpg","photo2.jpg","photo3.jpg","photo4.jpg","photo5.jpg",
+      "photo6.jpg","photo7.jpg","photo8.jpg","photo9.jpg","photo10.jpg",
+      "photo11.jpg","photo12.jpg","photo13.jpg","photo14.jpg","photo15.jpg",
+      "photo16.jpg","photo17.jpg","photo18.jpg","photo19.jpg","photo20.jpg",
+      "photo21.jpg","photo22.jpg","photo23.jpg","photo24.jpg","photo25.jpg",
+      "photo26.jpg","photo27.jpg","photo28.jpg","photo29.jpg","photo30.jpg"
     ]
   },
   {
-    folder: "event",
-    title: { zh: "活動照片", en: "Event Gallery" },
-    desc: { zh: "", en: "" },
-    files: [],
-    autoScan: true,      // ★ 唔使填 files：自動探測 event01~event99，丟相入 images/event/ 即自動顯示
-    scanStem: "event",   //   詞幹（對應 folder 名）
-    scanLimit: 99        //   最多探測到 event99（可視需要調大）
+    folder: "gallery",
+    title: { zh: "活動照片", en: "Event Photos" },
+    desc: { zh: "精選自歷次活動的珍貴瞬間，記錄每一次槳影破浪、同心協力的熱血畫面。", en: "Selected moments from past events — every frame of teamwork and passion." },
+    files: [
+      "photosgl01.jpg",
+      "photosgl02.jpg",
+      "photosgl03.jpg",
+      "photosgl04.jpg",
+      "photosgl05.jpg",
+      "photosgl06.jpg",
+      "photosgl07.jpg",
+      "photosgl08.jpg",
+      "photosgl09.jpg",
+      "photosgl10.jpg",
+      "photosgl11.jpg",
+      "photosgl12.jpg",
+      "photosgl13.jpg",
+      "photosgl14.jpg",
+      "photosgl15.jpg",
+      "photosgl16.jpg",
+      "photosgl17.jpg",
+      "photosgl18.jpg",
+      "photosgl19.jpg",
+      "photosgl20.jpg",
+      "photosgl21.jpg",
+      "photosgl22.jpg",
+      "photosgl23.jpg",
+      "photosgl24.jpg",
+      "photosgl25.jpg",
+      "photosgl26.jpg",
+      "photosgl27.jpg",
+      "photosgl28.jpg",
+      "photosgl29.jpg",
+      "photosgl30.jpg",
+      "photosgl31.jpg",
+      "photosgl32.jpg",
+      "photosgl33.jpg",
+      "photosgl34.jpg",
+      "photosgl35.jpg",
+      "photosgl36.jpg",
+      "photosgl37.jpg",
+      "photosgl38.jpg",
+      "photosgl39.jpg",
+      "photosgl40.jpg",
+      "photosgl41.jpg",
+      "photosgl42.jpg",
+      "photosgl43.jpg",
+      "photosgl44.jpg",
+      "photosgl45.jpg",
+      "photosgl46.jpg",
+      "photosgl47.jpg",
+      "photosgl48.jpg",
+      "photosgl49.jpg",
+      "photosgl50.jpg"
+    ]
   }
 ];
-
 
 // photos.json 仍然會喺背景嘗試載入（可選，用嚟支援未來動態覆蓋）
 // ※ 就算完全載唔到，ALBUMS 已有內嵌數據，圖展完全唔受影響
@@ -2253,26 +2222,13 @@ function renderAlbums() {
     html += '<div class="gallery-grid">';
     // folder：呢個相簿對應 images/ 下嘅邊個資料夾（內嵌數據必有；photos.json 覆蓋時都會補返）
     var folder = album.folder || '';
-    // ★ autoScan：files 留空時，自動探測 event01~event99（可自訂上限）
-    //   → 將活動相片丟入 images/event/ 即可自動顯示，唔使再維護 files 陣列
-    var files = album.files && album.files.length ? album.files.slice() : [];
-    if (files.length === 0 && album.autoScan) {
-      var stem = album.scanStem || folder;   // 預設用 folder 名做詞幹（event）
-      var limit = album.scanLimit || 99;
-      var pad = album.scanPad != null ? album.scanPad : 2;  // 預設 2 位：event01, event02 ...
-      for (var ni = 1; ni <= limit; ni++) {
-        var num = String(ni);
-        while (num.length < pad) num = '0' + num;  // 補前導零
-        files.push(stem + num);                    // event01, event02 ...（buildCandidates 再處理 event_01/event-01 等變體）
-      }
-    }
-    files.forEach(function(file) {
+    album.files.forEach(function(file) {
       // file 只係檔名（如 lsgl1.jpg），統一拼成 images/{folder}/{file}
       var name = String(file).replace(/\.[^/.]+$/, "");
       var cleanName = name.replace(/^.*\//, ""); // 純檔名，用嚟做 alt / 佔位文字（唔再顯示 lsgl/lsgl1）
       var safeName = cleanName.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
       var src = 'images/' + folder + '/' + cleanName + '.jpg';
-      html += '<div class="gallery-item"' + (album.autoScan ? ' data-auto-scan="1"' : '') + '>';
+      html += '<div class="gallery-item">';
       // ★ 直接用 inline onclick —— 無論幾時 render、切唔切語言，click 都一定得
       // ★ onerror 佔位：檔案唔存在時顯示醒目提示（橙色底 + 檔名 + 完整路徑），
       //   方便一眼睇出邊啲相未擺落 images/gallery/。放咗正確檔案就會自動正常顯示。
@@ -2283,14 +2239,9 @@ function renderAlbums() {
                       + '%3Ctext x=%22400%22 y=%22320%22 font-size=%2234%22 fill=%22%231E2A38%22 font-family=%22sans-serif%22 font-weight=%22700%22 text-anchor=%22middle%22%3E' + encodeURIComponent(safeName) + '%3C/text%3E%3E'
                       + '%3Ctext x=%22400%22 y=%22380%22 font-size=%2220%22 fill=%22%233A4A5C%22 font-family=%22sans-serif%22 text-anchor=%22middle%22%3E' + encodeURIComponent(src) + '%3C/text%3E%3E'
                       + '%3C/svg%3E';
-      // ★ 候選名自動探測：file 寫「photos_lg01」但磁碟實際係「photoslg01」「photos01」
-      //   等不同寫法時，主名 404 會自動逐個嘗試，命中真實檔案就正常顯示。
-      //   徹底解決大小寫 / 底線不一致導致的 ERR_FILE_NOT_FOUND。
-      var candidates = buildCandidates(folder, cleanName);
-      html += '<img data-candidates=\'' + JSON.stringify(candidates).replace(/'/g,"&#39;") + '\''
-            + ' src="' + candidates[0] + '" alt="' + safeName + '" loading="lazy"'
+      html += '<img src="' + src + '" alt="' + safeName + '" loading="lazy"'
             + ' onclick="window.__openLb && window.__openLb(this)"'
-            + ' onerror="onGalleryImgError(this)">';
+            + ' onerror="this.onerror=null;this.src=\'' + placeholder + '\';">';
       html += '<div class="gallery-overlay"><span>' + safeName + '</span></div>';
       html += '</div>';
     });
